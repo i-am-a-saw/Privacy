@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Privacy"
 include(":app")
+include(":core:model")
