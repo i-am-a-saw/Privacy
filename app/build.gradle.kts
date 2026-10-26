@@ -54,4 +54,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(project(":core:model"))
+    implementation(project(":core:designsystem"))
 }

@@ -28,3 +28,4 @@ rootProject.name = "Privacy"
 include(":app")
 include(":core:model")
 include(":core:common")
+include(":core:designsystem")
