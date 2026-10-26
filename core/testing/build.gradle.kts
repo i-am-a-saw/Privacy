@@ -1,0 +1,23 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_11
+    }
+}
+
+dependencies {
+    api(project(":core:model"))
+    api(project(":core:common"))
+    api(libs.junit)
+    api(libs.kotlinx.coroutines.test)
+}
