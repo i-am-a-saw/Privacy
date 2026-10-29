@@ -1,24 +1,24 @@
 package com.iamasaw.privacy.core.testing.data
 
+import com.iamasaw.privacy.core.model.Conversation
+import com.iamasaw.privacy.core.model.ConversationId
+import com.iamasaw.privacy.core.model.Message
+import com.iamasaw.privacy.core.model.MessageContent
+import com.iamasaw.privacy.core.model.MessageId
+import com.iamasaw.privacy.core.model.MessageStatus
 import com.iamasaw.privacy.core.model.User
 import com.iamasaw.privacy.core.model.UserId
-import com.iamasaw.privacy.core.model.Conversation
-import com.iamasaw.privacy.core.model.MessageStatus
-import com.iamasaw.privacy.core.model.MessageContent
-import com.iamasaw.privacy.core.model.Message
-import com.iamasaw.privacy.core.model.ConversationId
-import com.iamasaw.privacy.core.model.MessageId
 
 fun testUser(
     id: String = "user-alice",
     username: String = "alice",
     displayName: String = "Alice",
-    avatarPath: String? = null
+    avatarPath: String? = null,
 ) = User(
     id = UserId(id),
     username = username,
     displayName = displayName,
-    avatarPath = avatarPath
+    avatarPath = avatarPath,
 )
 
 fun testConversation(

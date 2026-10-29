@@ -6,9 +6,8 @@ import kotlin.time.Duration
 import kotlin.time.toJavaDuration
 
 class TestClock(
-    private var current: Instant = Instant.parse("2026-01-01T00:00:00Z")
+    private var current: Instant = Instant.parse("2026-01-01T00:00:00Z"),
 ) : Clock {
-
     override fun now(): Instant = current
 
     fun advanceBy(duration: Duration) {

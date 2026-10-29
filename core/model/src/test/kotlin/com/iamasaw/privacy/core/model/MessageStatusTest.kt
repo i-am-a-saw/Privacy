@@ -1,17 +1,16 @@
 package com.iamasaw.privacy.core.model
 
-import com.iamasaw.privacy.core.model.MessageStatus.PENDING
 import com.iamasaw.privacy.core.model.MessageStatus.DELIVERED
-import com.iamasaw.privacy.core.model.MessageStatus.SENT
 import com.iamasaw.privacy.core.model.MessageStatus.FAILED
+import com.iamasaw.privacy.core.model.MessageStatus.PENDING
 import com.iamasaw.privacy.core.model.MessageStatus.READ
+import com.iamasaw.privacy.core.model.MessageStatus.SENT
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MessageStatusTest {
-
     @Test
     fun `pending can become sent`() {
         assertTrue(PENDING.canTransitionTo(SENT))
@@ -53,21 +52,22 @@ class MessageStatusTest {
 
     @Test
     fun `every pair matches the transition table`() {
-        val allowed = listOf(
-            PENDING to SENT,
-            PENDING to FAILED,
-            SENT to DELIVERED,
-            SENT to READ,
-            DELIVERED to READ,
-            FAILED to PENDING,
-        )
+        val allowed =
+            listOf(
+                PENDING to SENT,
+                PENDING to FAILED,
+                SENT to DELIVERED,
+                SENT to READ,
+                DELIVERED to READ,
+                FAILED to PENDING,
+            )
 
         for (initialStatus in MessageStatus.entries) {
             for (finalStatus in MessageStatus.entries) {
                 assertEquals(
                     "$initialStatus -> $finalStatus",
                     (initialStatus to finalStatus) in allowed,
-                    initialStatus.canTransitionTo(finalStatus)
+                    initialStatus.canTransitionTo(finalStatus),
                 )
             }
         }
