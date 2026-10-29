@@ -41,5 +41,9 @@ gradlePlugin {
             id = libs.plugins.messenger.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("hilt") {
+            id = libs.plugins.messenger.hilt.get().pluginId
+            implementationClass = "HiltConventionPlugin"
+        }
     }
 }
