@@ -7,6 +7,8 @@ interface Clock {
     fun now(): Instant
 }
 
-class DefaultClock @Inject constructor() : Clock {
-    override fun now(): Instant = Instant.now()
-}
+class DefaultClock
+    @Inject
+    constructor() : Clock {
+        override fun now(): Instant = Instant.now()
+    }

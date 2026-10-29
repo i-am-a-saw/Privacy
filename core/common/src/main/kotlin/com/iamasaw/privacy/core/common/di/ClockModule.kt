@@ -10,7 +10,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ClockModule {
-
     @Binds
     abstract fun bindsClock(clock: DefaultClock): Clock
 }

@@ -6,17 +6,19 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val LightColors = lightColorScheme(
-    primary = Teal40,
-    secondary = Slate40,
-    error = Red40,
-)
+private val LightColors =
+    lightColorScheme(
+        primary = Teal40,
+        secondary = Slate40,
+        error = Red40,
+    )
 
-private val DarkColors = darkColorScheme(
-    primary = Teal80,
-    secondary = Slate80,
-    error = Red80
-)
+private val DarkColors =
+    darkColorScheme(
+        primary = Teal80,
+        secondary = Slate80,
+        error = Red80,
+    )
 
 @Composable
 fun MessengerTheme(
