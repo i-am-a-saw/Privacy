@@ -21,6 +21,8 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
+    compileOnly(libs.spotless.gradlePlugin)
 }
 
 gradlePlugin {
@@ -44,6 +46,14 @@ gradlePlugin {
         register("hilt") {
             id = libs.plugins.messenger.hilt.get().pluginId
             implementationClass = "HiltConventionPlugin"
+        }
+        register("detekt") {
+            id = libs.plugins.messenger.detekt.get().pluginId
+            implementationClass = "DetektConventionPlugin"
+        }
+        register("spotless") {
+            id = libs.plugins.messenger.spotless.get().pluginId
+            implementationClass = "SpotlessConventionPlugin"
         }
     }
 }

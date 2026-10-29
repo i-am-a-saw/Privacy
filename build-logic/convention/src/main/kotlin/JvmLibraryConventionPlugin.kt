@@ -8,6 +8,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 class JvmLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         pluginManager.apply("org.jetbrains.kotlin.jvm")
+        pluginManager.apply("messenger.detekt")
+        pluginManager.apply("messenger.spotless")
 
         extensions.configure<JavaPluginExtension> {
             sourceCompatibility = ProjectConfig.JAVA_VERSION
