@@ -6,4 +6,7 @@ enum class MessageStatus {
     DELIVERED,
     READ,
     FAILED,
+    ;
+
+    fun canTransitionTo(next: MessageStatus): Boolean = TODO()
 }
