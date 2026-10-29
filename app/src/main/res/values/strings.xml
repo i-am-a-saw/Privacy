@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Privacy</string>
+    <string name="placeholder_warning">Under construction. Not secure yet, so do not use it for real conversations.</string>
 </resources>
