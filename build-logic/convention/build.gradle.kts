@@ -23,6 +23,8 @@ dependencies {
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
+    testImplementation(gradleTestKit())
+    testImplementation(libs.junit)
 }
 
 gradlePlugin {
@@ -54,6 +56,10 @@ gradlePlugin {
         register("spotless") {
             id = libs.plugins.messenger.spotless.get().pluginId
             implementationClass = "SpotlessConventionPlugin"
+        }
+        register("moduleRules") {
+            id = libs.plugins.messenger.module.rules.get().pluginId
+            implementationClass = "ModuleRulesConventionPlugin"
         }
     }
 }
