@@ -30,6 +30,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Test and validate convention plugins
+        run: ./gradlew -p build-logic :convention:check
+
       - name: Lint, detekt, ktlint, unit tests and debug build
         run: ./gradlew check assembleDebug
 

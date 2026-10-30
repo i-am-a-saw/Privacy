@@ -64,3 +64,4 @@ messenger-jvm-library = { id = "messenger.jvm.library" }
 messenger-hilt = { id = "messenger.hilt" }
 messenger-detekt = { id = "messenger.detekt" }
 messenger-spotless = { id = "messenger.spotless" }
+messenger-module-rules = { id = "messenger.module.rules" }
