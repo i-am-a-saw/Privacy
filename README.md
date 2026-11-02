@@ -4,7 +4,7 @@
 
 ## Status - in development
 
-The current milestone is **<u>Foundation</u>** (milestone 0 of 8)  
+The current milestone is **<u>Accounts and identity</u>** (milestone 1 of 8)  
 List of modules:
 - `app`: Android app built with Kotlin, Jetpack Compose and Hilt.
 - `core:model`: user, conversation and message models.
