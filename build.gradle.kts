@@ -9,4 +9,5 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.messenger.module.rules)
+    alias(libs.plugins.kotlin.serialization) apply false
 }
