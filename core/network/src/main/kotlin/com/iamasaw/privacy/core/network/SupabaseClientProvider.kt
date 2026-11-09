@@ -15,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SupabaseClientProvider  {
+object SupabaseClientProvider {
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {
@@ -27,7 +27,7 @@ object SupabaseClientProvider  {
 
         return createSupabaseClient(
             supabaseUrl = url,
-            supabaseKey = key
+            supabaseKey = key,
         ) {
             install(Auth)
             install(Postgrest)
