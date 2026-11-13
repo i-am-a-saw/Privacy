@@ -34,7 +34,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:common"))
-    implementation(project(":core:network"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
