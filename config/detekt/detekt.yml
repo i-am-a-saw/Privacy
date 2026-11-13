@@ -8,3 +8,8 @@ style:
     ignoreAnnotated:
       - Preview
       - PreviewLightDark
+
+exceptions:
+  TooGenericExceptionCaught:
+    excludes:
+      - '**/AppErrorMapper.kt'

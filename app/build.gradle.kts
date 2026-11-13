@@ -12,12 +12,29 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("local") {
+            dimension = "environment"
+            applicationIdSuffix = ".local"
+        }
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+        }
+        create("demo") {
+            dimension = "environment"
+            applicationIdSuffix = ".demo"
+        }
+    }
 }
 
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
