@@ -1,4 +1,3 @@
-
 package com.iamasaw.privacy
 
 import com.iamasaw.privacy.core.common.error.AppError
@@ -13,6 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 
@@ -188,5 +189,64 @@ class AppViewModelTest {
                 AppState.Loading,
                 viewModel.appState.value,
             )
+        }
+
+    @Test
+    fun `profile failure releases splash and retry loads profile again`() =
+        runTest {
+            val authRepository = FakeAuthRepository()
+            val profileRepository =
+                FakeProfileRepository().apply {
+                    profileResult = AppResult.Failure(AppError.NoNetwork)
+                }
+            val viewModel =
+                createViewModel(
+                    authRepository,
+                    profileRepository,
+                )
+
+            authRepository.setSessionState(
+                SessionState.SignedIn(UserId("test-user")),
+            )
+            advanceUntilIdle()
+
+            assertEquals(AppError.NoNetwork, viewModel.startupError.value)
+            assertEquals(AppState.Loading, viewModel.appState.value)
+            assertFalse(viewModel.shouldKeepSplashScreen())
+
+            profileRepository.profileResult = AppResult.Success(null)
+            viewModel.refreshProfile()
+            advanceUntilIdle()
+
+            assertEquals(AppState.NeedsProfile, viewModel.appState.value)
+            assertNull(viewModel.startupError.value)
+            assertEquals(2, profileRepository.fetchOwnProfileCalls)
+        }
+
+    @Test
+    fun `signing out clears a previous startup failure`() =
+        runTest {
+            val authRepository = FakeAuthRepository()
+            val profileRepository =
+                FakeProfileRepository().apply {
+                    profileResult = AppResult.Failure(AppError.NoNetwork)
+                }
+            val viewModel =
+                createViewModel(
+                    authRepository,
+                    profileRepository,
+                )
+
+            authRepository.setSessionState(
+                SessionState.SignedIn(UserId("test-user")),
+            )
+            advanceUntilIdle()
+
+            authRepository.setSessionState(SessionState.SignedOut)
+            advanceUntilIdle()
+
+            assertEquals(AppState.SignedOut, viewModel.appState.value)
+            assertNull(viewModel.startupError.value)
+            assertFalse(viewModel.shouldKeepSplashScreen())
         }
 }
