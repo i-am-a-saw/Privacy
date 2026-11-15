@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Privacy</string>
     <string name="placeholder_warning">Under construction. Not secure yet, so do not use it for real conversations.</string>
+    <string name="gate_sign_in_title">Sign in</string>
+    <string name="gate_sign_in_message">Phone sign-in will be available here.</string>
+    <string name="gate_profile_title">Create your profile</string>
+    <string name="gate_profile_message">Choose your username here once profile setup is added.</string>
+    <string name="gate_home_title">Welcome to Privacy</string>
+    <string name="gate_home_message">Your account and profile are ready.</string>
+    <string name="gate_network_error">Could not load your profile. Check your connection and try again.</string>
+    <string name="gate_startup_error">Could not load your profile. Please try again.</string>
 </resources>
