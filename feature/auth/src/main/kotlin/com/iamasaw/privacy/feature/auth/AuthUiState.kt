@@ -23,5 +23,5 @@ data class CodeEntryUiState(
     val secondsRemaining: Int = 0,
     val isSubmitting: Boolean = false,
     val verified: Boolean = false,
-    val error: AppError? = null
+    val error: AppError? = null,
 )
