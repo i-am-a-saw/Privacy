@@ -3,7 +3,13 @@ package com.iamasaw.privacy.feature.onboarding
 import com.iamasaw.privacy.core.common.error.AppError
 
 enum class UsernameAvailability {
-    IDLE, INVALID, PENDING, CHECKING, TAKEN, AVAILABLE, FAILED,
+    IDLE,
+    INVALID,
+    PENDING,
+    CHECKING,
+    TAKEN,
+    AVAILABLE,
+    FAILED,
 }
 
 data class ProfileSetupUiState(

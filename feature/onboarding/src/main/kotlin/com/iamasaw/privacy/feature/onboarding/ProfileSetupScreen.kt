@@ -28,18 +28,21 @@ fun ProfileSetupScreen(
 ) {
     val editable = !state.isSubmitting && !state.profileCreated
     val usernameHasError =
-        state.availability == UsernameAvailability.FAILED || state.availability == UsernameAvailability.TAKEN || state.availability == UsernameAvailability.INVALID
+        state.availability == UsernameAvailability.FAILED || state.availability == UsernameAvailability.TAKEN ||
+            state.availability == UsernameAvailability.INVALID
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp), verticalArrangement = Arrangement.spacedBy(24.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Text(
             stringResource(R.string.profile_setup_title),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
         )
 
         OutlinedTextField(
@@ -54,8 +57,12 @@ fun ProfileSetupScreen(
 
         Text(
             text = availabilityText(state.availability),
-            color = if (usernameHasError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.onSurface
+            color =
+                if (usernameHasError) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
         )
 
         if (state.availability == UsernameAvailability.FAILED) {
@@ -71,9 +78,14 @@ fun ProfileSetupScreen(
         }
 
         OutlinedTextField(
-            value = state.displayName, onValueChange = onDisplayNameChanged, label = {
+            value = state.displayName,
+            onValueChange = onDisplayNameChanged,
+            label = {
                 Text(stringResource(R.string.profile_display_name_label))
-            }, singleLine = true, enabled = editable, modifier = Modifier.fillMaxWidth()
+            },
+            singleLine = true,
+            enabled = editable,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         state.submitError?.let {
@@ -84,35 +96,39 @@ fun ProfileSetupScreen(
         }
 
         MessengerButton(
-            text = stringResource(
-                when {
-                    state.profileCreated -> R.string.profile_created
-                    state.isSubmitting -> R.string.profile_creating
-                    else -> R.string.profile_create
-                }
-            ), onClick = onSubmit, enabled = state.canSubmit
+            text =
+                stringResource(
+                    when {
+                        state.profileCreated -> R.string.profile_created
+                        state.isSubmitting -> R.string.profile_creating
+                        else -> R.string.profile_create
+                    },
+                ),
+            onClick = onSubmit,
+            enabled = state.canSubmit,
         )
     }
 }
 
 @Composable
-private fun availabilityText(availability: UsernameAvailability): String = stringResource(
-    when (availability) {
-        UsernameAvailability.IDLE, UsernameAvailability.INVALID -> R.string.profile_username_rules
-
-        UsernameAvailability.PENDING -> R.string.profile_username_pending
-        UsernameAvailability.CHECKING -> R.string.profile_username_checking
-        UsernameAvailability.TAKEN -> R.string.profile_username_taken
-        UsernameAvailability.AVAILABLE -> R.string.profile_username_available
-        UsernameAvailability.FAILED -> R.string.profile_username_failed
-    }
-)
+private fun availabilityText(availability: UsernameAvailability): String =
+    stringResource(
+        when (availability) {
+            UsernameAvailability.IDLE, UsernameAvailability.INVALID -> R.string.profile_username_rules
+            UsernameAvailability.PENDING -> R.string.profile_username_pending
+            UsernameAvailability.CHECKING -> R.string.profile_username_checking
+            UsernameAvailability.TAKEN -> R.string.profile_username_taken
+            UsernameAvailability.AVAILABLE -> R.string.profile_username_available
+            UsernameAvailability.FAILED -> R.string.profile_username_failed
+        },
+    )
 
 @Composable
-private fun profileErrorText(error: AppError?): String = stringResource(
-    when (error) {
-        is AppError.NoNetwork -> R.string.profile_no_network
-        is AppError.RateLimited -> R.string.profile_rate_limited
-        else -> R.string.profile_unknown_error
-    }
-)
+private fun profileErrorText(error: AppError?): String =
+    stringResource(
+        when (error) {
+            is AppError.NoNetwork -> R.string.profile_no_network
+            is AppError.RateLimited -> R.string.profile_rate_limited
+            else -> R.string.profile_unknown_error
+        },
+    )

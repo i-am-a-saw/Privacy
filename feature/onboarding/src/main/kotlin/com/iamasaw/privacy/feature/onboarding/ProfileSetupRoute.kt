@@ -8,7 +8,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ProfileSetupRoute(
-    onProfileCreated: () -> Unit, viewModel: ProfileSetupViewModel = hiltViewModel()
+    onProfileCreated: () -> Unit,
+    viewModel: ProfileSetupViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

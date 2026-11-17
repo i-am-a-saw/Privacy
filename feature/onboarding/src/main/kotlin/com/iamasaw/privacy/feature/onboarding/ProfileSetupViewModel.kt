@@ -23,164 +23,183 @@ private data class UsernameQuery(
     val revision: Long = 0L,
 )
 
-private fun internalAvailability(username: String): UsernameAvailability = when {
-    username.isEmpty() -> UsernameAvailability.IDLE
-    !USERNAME_PATTERN.matches(username) -> UsernameAvailability.INVALID
-    else -> UsernameAvailability.PENDING
-}
+private fun internalAvailability(username: String): UsernameAvailability =
+    when {
+        username.isEmpty() -> UsernameAvailability.IDLE
+        !USERNAME_PATTERN.matches(username) -> UsernameAvailability.INVALID
+        else -> UsernameAvailability.PENDING
+    }
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
-class ProfileSetupViewModel @Inject constructor(
-    private val repository: ProfileRepository, private val savedState: SavedStateHandle
-) : ViewModel() {
-    private val restoredUsername = savedState.get<String>("username").orEmpty()
+class ProfileSetupViewModel
+    @Inject
+    constructor(
+        private val repository: ProfileRepository,
+        private val savedState: SavedStateHandle,
+    ) : ViewModel() {
+        private val restoredUsername = savedState.get<String>("username").orEmpty()
 
-    private val mutableUiState = MutableStateFlow(
-        ProfileSetupUiState(
-            username = restoredUsername,
-            displayName = savedState.get<String>("display_name").orEmpty(),
-            availability = internalAvailability(restoredUsername)
-        )
-    )
+        private val mutableUiState =
+            MutableStateFlow(
+                ProfileSetupUiState(
+                    username = restoredUsername,
+                    displayName = savedState.get<String>("display_name").orEmpty(),
+                    availability = internalAvailability(restoredUsername),
+                ),
+            )
 
-    val uiState = mutableUiState.asStateFlow()
+        val uiState = mutableUiState.asStateFlow()
 
-    private val queries = MutableStateFlow(
-        UsernameQuery(restoredUsername)
-    )
+        private val queries =
+            MutableStateFlow(
+                UsernameQuery(restoredUsername),
+            )
 
-    init {
-        viewModelScope.launch {
-            queries.debounce(USERNAME_DEBOUNCE_MILLIS).collectLatest { query ->
-                checkAvailability(query)
+        init {
+            viewModelScope.launch {
+                queries.debounce(USERNAME_DEBOUNCE_MILLIS).collectLatest { query ->
+                    checkAvailability(query)
+                }
             }
         }
-    }
 
-    fun onUsernameChanged(username: String) {
-        val state = uiState.value
-        if (state.isSubmitting || state.profileCreated) return
-        if (state.username == username) return
+        fun onUsernameChanged(username: String) {
+            val state = uiState.value
+            if (state.isSubmitting || state.profileCreated) return
+            if (state.username == username) return
 
-        savedState["username"] = username
-        mutableUiState.value = uiState.value.copy(
-            username = username,
-            availability = internalAvailability(username),
-            lookupError = null,
-            submitError = null,
-        )
+            savedState["username"] = username
+            mutableUiState.value =
+                uiState.value.copy(
+                    username = username,
+                    availability = internalAvailability(username),
+                    lookupError = null,
+                    submitError = null,
+                )
 
-        queries.value = UsernameQuery(
-            username = username,
-            revision = queries.value.revision + 1,
-        )
-    }
+            queries.value =
+                UsernameQuery(
+                    username = username,
+                    revision = queries.value.revision + 1,
+                )
+        }
 
-    fun onDisplayNameChanged(displayName: String) {
-        if (uiState.value.isSubmitting || uiState.value.profileCreated) return
+        fun onDisplayNameChanged(displayName: String) {
+            if (uiState.value.isSubmitting || uiState.value.profileCreated) return
 
-        savedState["display_name"] = displayName
-        mutableUiState.value = uiState.value.copy(
-            displayName = displayName,
-            submitError = null,
-        )
-    }
+            savedState["display_name"] = displayName
+            mutableUiState.value =
+                uiState.value.copy(
+                    displayName = displayName,
+                    submitError = null,
+                )
+        }
 
-    fun onRetryAvailability() {
-        val state = uiState.value
-        if (state.isSubmitting || state.profileCreated) return
-        if (!USERNAME_PATTERN.matches(state.username)) return
+        fun onRetryAvailability() {
+            val state = uiState.value
+            if (state.isSubmitting || state.profileCreated) return
+            if (!USERNAME_PATTERN.matches(state.username)) return
 
-        mutableUiState.value = state.copy(
-            availability = UsernameAvailability.PENDING,
-            lookupError = null,
-        )
+            mutableUiState.value =
+                state.copy(
+                    availability = UsernameAvailability.PENDING,
+                    lookupError = null,
+                )
 
-        queries.value = queries.value.copy(
-            revision = queries.value.revision + 1,
-        )
-    }
+            queries.value =
+                queries.value.copy(
+                    revision = queries.value.revision + 1,
+                )
+        }
 
-    fun submit() {
-        val state = uiState.value
-        if (!state.canSubmit) return
+        fun submit() {
+            val state = uiState.value
+            if (!state.canSubmit) return
 
-        mutableUiState.value = state.copy(
-            isSubmitting = true,
-            submitError = null,
-        )
+            mutableUiState.value =
+                state.copy(
+                    isSubmitting = true,
+                    submitError = null,
+                )
 
-        viewModelScope.launch {
-            when (val result = repository.createProfile(
-                username = state.username, displayName = state.displayName
-            )) {
-                is AppResult.Success -> {
-                    mutableUiState.value = state.copy(
-                        isSubmitting = false,
-                        profileCreated = true,
-                    )
-                }
-
-                is AppResult.Failure -> {
-                    when (result.error) {
-                        is AppError.UsernameTaken -> {
-                            mutableUiState.value = state.copy(
+            viewModelScope.launch {
+                when (
+                    val result =
+                        repository.createProfile(
+                            username = state.username,
+                            displayName = state.displayName,
+                        )
+                ) {
+                    is AppResult.Success -> {
+                        mutableUiState.value =
+                            state.copy(
                                 isSubmitting = false,
-                                availability = UsernameAvailability.TAKEN,
-                                submitError = result.error,
+                                profileCreated = true,
                             )
-                        }
+                    }
 
-                        else -> {
-                            mutableUiState.value = state.copy(
-                                isSubmitting = false,
-                                submitError = result.error,
+                    is AppResult.Failure -> {
+                        when (result.error) {
+                            is AppError.UsernameTaken -> {
+                                mutableUiState.value =
+                                    state.copy(
+                                        isSubmitting = false,
+                                        availability = UsernameAvailability.TAKEN,
+                                        submitError = result.error,
+                                    )
+                            }
+
+                            else -> {
+                                mutableUiState.value =
+                                    state.copy(
+                                        isSubmitting = false,
+                                        submitError = result.error,
+                                    )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private suspend fun checkAvailability(query: UsernameQuery) {
+            if (!isCurrentQuery(query) || !USERNAME_PATTERN.matches(query.username)) return
+
+            mutableUiState.value =
+                uiState.value.copy(
+                    availability = UsernameAvailability.CHECKING,
+                    lookupError = null,
+                )
+
+            val result = repository.findByUsername(query.username)
+            if (!isCurrentQuery(query)) return
+
+            mutableUiState.value =
+                when (result) {
+                    is AppResult.Success -> {
+                        if (result.value == null) {
+                            uiState.value.copy(
+                                availability = UsernameAvailability.AVAILABLE,
+                                lookupError = null,
+                            )
+                        } else {
+                            uiState.value.copy(
+                                availability = UsernameAvailability.TAKEN,
+                                lookupError = null,
                             )
                         }
                     }
 
+                    is AppResult.Failure -> {
+                        uiState.value.copy(
+                            availability = UsernameAvailability.FAILED,
+                            lookupError = result.error,
+                        )
+                    }
                 }
-            }
         }
+
+        private fun isCurrentQuery(query: UsernameQuery): Boolean =
+            query == queries.value && !uiState.value.isSubmitting && !uiState.value.profileCreated
     }
-
-    private suspend fun checkAvailability(query: UsernameQuery) {
-        if (!isCurrentQuery(query)) return
-        if (!USERNAME_PATTERN.matches(query.username)) return
-
-        mutableUiState.value = uiState.value.copy(
-            availability = UsernameAvailability.CHECKING,
-            lookupError = null,
-        )
-
-        val result = repository.findByUsername(query.username)
-        if (!isCurrentQuery(query)) return
-
-        mutableUiState.value = when (result) {
-            is AppResult.Success -> {
-                if (result.value == null) {
-                    uiState.value.copy(
-                        availability = UsernameAvailability.AVAILABLE,
-                        lookupError = null,
-                    )
-                } else {
-                    uiState.value.copy(
-                        availability = UsernameAvailability.TAKEN,
-                        lookupError = null,
-                    )
-                }
-            }
-
-            is AppResult.Failure -> {
-                uiState.value.copy(
-                    availability = UsernameAvailability.FAILED,
-                    lookupError = result.error,
-                )
-            }
-        }
-    }
-
-    private fun isCurrentQuery(query: UsernameQuery): Boolean =
-        query == queries.value && !uiState.value.isSubmitting && !uiState.value.profileCreated
-}
