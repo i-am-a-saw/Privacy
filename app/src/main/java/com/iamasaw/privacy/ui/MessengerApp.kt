@@ -28,6 +28,7 @@ import com.iamasaw.privacy.core.designsystem.component.LoadingIndicator
 import com.iamasaw.privacy.core.navigation.AppNavKey
 import com.iamasaw.privacy.feature.auth.CodeEntryRoute
 import com.iamasaw.privacy.feature.auth.PhoneEntryRoute
+import com.iamasaw.privacy.feature.onboarding.ProfileSetupRoute
 
 @Composable
 fun MessengerApp(
@@ -42,41 +43,41 @@ fun MessengerApp(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .safeDrawingPadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding(),
         ) {
-            val destination =
-                when (appState) {
-                    AppState.Loading -> null
-                    AppState.NeedsProfile -> AppNavKey.ProfileSetup
-                    AppState.Ready -> AppNavKey.Home
-                    AppState.SignedOut -> AppNavKey.PhoneEntry
-                }
+            val destination = when (appState) {
+                AppState.Loading -> null
+                AppState.NeedsProfile -> AppNavKey.ProfileSetup
+                AppState.Ready -> AppNavKey.Home
+                AppState.SignedOut -> AppNavKey.PhoneEntry
+            }
             if (destination == null) {
                 if (startupError == null) {
                     LoadingIndicator(Modifier.fillMaxSize())
                 } else {
                     ErrorState(
-                        message =
-                            stringResource(
-                                if (startupError == AppError.NoNetwork) {
-                                    R.string.gate_network_error
-                                } else {
-                                    R.string.gate_startup_error
-                                },
-                            ),
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(24.dp),
+                        message = stringResource(
+                            if (startupError == AppError.NoNetwork) {
+                                R.string.gate_network_error
+                            } else {
+                                R.string.gate_startup_error
+                            },
+                        ),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
                         onRetry = onRetry,
                     )
                 }
             } else {
                 key(destination) {
-                    GateNavHost(destination, phoneEntryContent)
+                    GateNavHost(
+                        startDestination = destination,
+                        phoneEntryContent = phoneEntryContent,
+                        onProfileCreated = onRetry,
+                    )
                 }
             }
         }
@@ -87,50 +88,46 @@ fun MessengerApp(
 private fun GateNavHost(
     startDestination: AppNavKey,
     phoneEntryContent: @Composable ((String, Long) -> Unit) -> Unit,
+    onProfileCreated: () -> Unit,
 ) {
     val backStack = rememberNavBackStack(startDestination)
 
     NavDisplay(
         backStack = backStack,
         modifier = Modifier.fillMaxSize(),
-        entryDecorators =
-            listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator(),
-            ),
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
         onBack = {
             if (backStack.size > 1) {
                 backStack.removeAt(backStack.lastIndex)
             }
         },
-        entryProvider =
-            entryProvider {
-                entry<AppNavKey.PhoneEntry> {
-                    phoneEntryContent { phone, deadline ->
-                        if (backStack.lastOrNull() == AppNavKey.PhoneEntry) {
-                            backStack.add(AppNavKey.CodeEntry(phone, deadline))
-                        }
+        entryProvider = entryProvider {
+            entry<AppNavKey.PhoneEntry> {
+                phoneEntryContent { phone, deadline ->
+                    if (backStack.lastOrNull() == AppNavKey.PhoneEntry) {
+                        backStack.add(AppNavKey.CodeEntry(phone, deadline))
                     }
                 }
-                entry<AppNavKey.CodeEntry> { destination ->
-                    CodeEntryRoute(
-                        phone = destination.phone,
-                        resendAtEpochMillis = destination.resendApEpochMillis,
-                    )
-                }
-                entry<AppNavKey.ProfileSetup> {
-                    GateDestination(
-                        title = stringResource(R.string.gate_profile_title),
-                        message = stringResource(R.string.gate_profile_message),
-                    )
-                }
-                entry<AppNavKey.Home> {
-                    GateDestination(
-                        title = stringResource(R.string.gate_home_title),
-                        message = stringResource(R.string.gate_home_message),
-                    )
-                }
-            },
+            }
+            entry<AppNavKey.CodeEntry> { destination ->
+                CodeEntryRoute(
+                    phone = destination.phone,
+                    resendAtEpochMillis = destination.resendApEpochMillis,
+                )
+            }
+            entry<AppNavKey.ProfileSetup> {
+                ProfileSetupRoute(onProfileCreated = onProfileCreated)
+            }
+            entry<AppNavKey.Home> {
+                GateDestination(
+                    title = stringResource(R.string.gate_home_title),
+                    message = stringResource(R.string.gate_home_message),
+                )
+            }
+        },
     )
 }
 
@@ -140,16 +137,14 @@ private fun GateDestination(
     message: String,
 ) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =
-            Arrangement.spacedBy(
-                16.dp,
-                Alignment.CenterVertically,
-            ),
+        verticalArrangement = Arrangement.spacedBy(
+            16.dp,
+            Alignment.CenterVertically,
+        ),
     ) {
         Text(title, style = MaterialTheme.typography.headlineMedium)
         Text(message, style = MaterialTheme.typography.bodyLarge)
