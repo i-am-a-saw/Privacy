@@ -21,7 +21,7 @@ android {
     productFlavors {
         create("local") {
             dimension = "environment"
-            buildConfigField("String", "SUPABASE_URL", "\"http://10.0.2.2:54321\"")
+            buildConfigField("String", "SUPABASE_URL", "\"http://127.0.0.1:54321\"")
             buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"$localKey\"")
         }
         create("dev") {
