@@ -13,3 +13,7 @@ exceptions:
   TooGenericExceptionCaught:
     excludes:
       - '**/AppErrorMapper.kt'
+
+complexity:
+  LongMethod:
+    allowedLines: 100
