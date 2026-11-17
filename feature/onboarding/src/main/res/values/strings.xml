@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_setup_title">Create your profile</string>
+    <string name="profile_username_label">Username</string>
+    <string name="profile_display_name_label">Display name (optional)</string>
+    <string name="profile_username_rules">Use 3–20 lowercase letters, digits, or underscores.</string>
+    <string name="profile_username_pending">Waiting to check…</string>
+    <string name="profile_username_checking">Checking availability…</string>
+    <string name="profile_username_available">Username is available.</string>
+    <string name="profile_username_taken">That username is taken. Choose another.</string>
+    <string name="profile_username_failed">Could not check this username.</string>
+    <string name="profile_retry_lookup">Check again</string>
+    <string name="profile_create">Create profile</string>
+    <string name="profile_creating">Creating profile…</string>
+    <string name="profile_created">Opening your account…</string>
+    <string name="profile_no_network">Could not connect. Check your connection and try again.</string>
+    <string name="profile_rate_limited">Too many requests. Wait before trying again.</string>
+    <string name="profile_unknown_error">Something went wrong. Please try again.</string>
+</resources>
