@@ -8,6 +8,12 @@ sealed interface AppNavKey : NavKey {
     data object PhoneEntry : AppNavKey
 
     @Serializable
+    data class CodeEntry(
+        val phone: String,
+        val resendApEpochMillis: Long,
+    ) : AppNavKey
+
+    @Serializable
     data object ProfileSetup : AppNavKey
 
     @Serializable

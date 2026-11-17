@@ -1,6 +1,8 @@
 package com.iamasaw.privacy
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -28,6 +30,9 @@ class AuthGateTest {
                     appState = state.value,
                     startupError = null,
                     onRetry = {},
+                    phoneEntryContent = { _ ->
+                        Text(stringResource(R.string.gate_sign_in_title))
+                    },
                 )
             }
         }
