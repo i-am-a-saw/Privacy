@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_phone_title">Sign in</string>
+    <string name="auth_phone_label">Phone number</string>
+    <string name="auth_phone_hint">Use international format, for example +16505550101.</string>
+    <string name="auth_send_code">Send code</string>
+    <string name="auth_sending">Please wait…</string>
+    <string name="auth_code_title">Enter your code</string>
+    <string name="auth_code_sent_to">Code sent to %1$s</string>
+    <string name="auth_code_label">Six-digit code</string>
+    <string name="auth_verify">Verify code</string>
+    <string name="auth_verified">Signed in</string>
+    <string name="auth_resend">Resend code</string>
+    <string name="auth_resend_countdown">Resend in %1$d seconds</string>
+    <string name="auth_invalid_phone">Enter a phone number starting with + and its country code.</string>
+    <string name="auth_invalid_code">The code is invalid or expired. Check it and try again.</string>
+    <string name="auth_no_network">Could not connect. Check your connection and try again.</string>
+    <string name="auth_rate_limited">Too many attempts. Wait before trying again.</string>
+    <string name="auth_unknown_error">Something went wrong. Please try again.</string>
+</resources>
