@@ -21,24 +21,29 @@ import com.iamasaw.privacy.core.designsystem.component.MessengerButton
 
 @Composable
 fun PhoneEntryScreen(
-    state: PhoneEntryUiState, onPhoneChanged: (String) -> Unit, onSubmit: () -> Unit
+    state: PhoneEntryUiState,
+    onPhoneChanged: (String) -> Unit,
+    onSubmit: () -> Unit,
 ) {
-    val error = if (state.invalidPhone) {
-        stringResource(R.string.auth_invalid_phone)
-    } else {
-        authErrorText(state.error)
-    }
+    val error =
+        if (state.invalidPhone) {
+            stringResource(R.string.auth_invalid_phone)
+        } else {
+            authErrorText(state.error)
+        }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
             stringResource(R.string.auth_phone_title),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
         )
         Text(stringResource(R.string.auth_phone_hint))
         OutlinedTextField(
@@ -47,9 +52,10 @@ fun PhoneEntryScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isSubmitting,
             label = { Text(stringResource(R.string.auth_phone_label)) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone,
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                ),
             singleLine = true,
             isError = error != null,
         )
@@ -57,13 +63,14 @@ fun PhoneEntryScreen(
             Text(error, color = MaterialTheme.colorScheme.error)
         }
         MessengerButton(
-            text = stringResource(
-                if (state.isSubmitting) {
-                    R.string.auth_sending
-                } else {
-                    R.string.auth_send_code
-                },
-            ),
+            text =
+                stringResource(
+                    if (state.isSubmitting) {
+                        R.string.auth_sending
+                    } else {
+                        R.string.auth_send_code
+                    },
+                ),
             onClick = onSubmit,
             enabled = !state.isSubmitting,
         )

@@ -29,11 +29,13 @@ fun CodeEntryScreen(
     val error = authErrorText(state.error)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
             stringResource(R.string.auth_code_title),
@@ -46,9 +48,10 @@ fun CodeEntryScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isSubmitting && !state.verified,
             label = { Text(stringResource(R.string.auth_code_label)) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.NumberPassword,
+                ),
             singleLine = true,
             isError = error != null,
         )
@@ -56,28 +59,29 @@ fun CodeEntryScreen(
             Text(error, color = MaterialTheme.colorScheme.error)
         }
         MessengerButton(
-            text = stringResource(
-                when {
-                    state.verified -> R.string.auth_verified
-                    state.isSubmitting -> R.string.auth_sending
-                    else -> R.string.auth_verify
-                },
-            ),
+            text =
+                stringResource(
+                    when {
+                        state.verified -> R.string.auth_verified
+                        state.isSubmitting -> R.string.auth_sending
+                        else -> R.string.auth_verify
+                    },
+                ),
             onClick = onVerify,
             enabled = !state.isSubmitting && !state.verified,
         )
         MessengerButton(
-            text = if (state.secondsRemaining > 0) {
-                stringResource(
-                    R.string.auth_resend_countdown,
-                    state.secondsRemaining,
-                )
-            } else {
-                stringResource(R.string.auth_resend)
-            },
+            text =
+                if (state.secondsRemaining > 0) {
+                    stringResource(
+                        R.string.auth_resend_countdown,
+                        state.secondsRemaining,
+                    )
+                } else {
+                    stringResource(R.string.auth_resend)
+                },
             onClick = onResend,
-            enabled = state.secondsRemaining == 0 &&
-                    !state.isSubmitting && !state.verified,
+            enabled = state.secondsRemaining == 0 && !state.isSubmitting && !state.verified,
         )
     }
 }
