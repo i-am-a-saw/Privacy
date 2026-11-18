@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.messenger.module.rules)
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.room3) apply false
 }
