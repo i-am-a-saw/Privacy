@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":core:testing"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:onboarding"))
 
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.activity.compose)

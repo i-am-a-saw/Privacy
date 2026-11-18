@@ -28,6 +28,7 @@ import com.iamasaw.privacy.core.designsystem.component.LoadingIndicator
 import com.iamasaw.privacy.core.navigation.AppNavKey
 import com.iamasaw.privacy.feature.auth.CodeEntryRoute
 import com.iamasaw.privacy.feature.auth.PhoneEntryRoute
+import com.iamasaw.privacy.feature.onboarding.ProfileSetupRoute
 
 @Composable
 fun MessengerApp(
@@ -76,7 +77,11 @@ fun MessengerApp(
                 }
             } else {
                 key(destination) {
-                    GateNavHost(destination, phoneEntryContent)
+                    GateNavHost(
+                        startDestination = destination,
+                        phoneEntryContent = phoneEntryContent,
+                        onProfileCreated = onRetry,
+                    )
                 }
             }
         }
@@ -87,6 +92,7 @@ fun MessengerApp(
 private fun GateNavHost(
     startDestination: AppNavKey,
     phoneEntryContent: @Composable ((String, Long) -> Unit) -> Unit,
+    onProfileCreated: () -> Unit,
 ) {
     val backStack = rememberNavBackStack(startDestination)
 
@@ -119,10 +125,7 @@ private fun GateNavHost(
                     )
                 }
                 entry<AppNavKey.ProfileSetup> {
-                    GateDestination(
-                        title = stringResource(R.string.gate_profile_title),
-                        message = stringResource(R.string.gate_profile_message),
-                    )
+                    ProfileSetupRoute(onProfileCreated = onProfileCreated)
                 }
                 entry<AppNavKey.Home> {
                     GateDestination(
