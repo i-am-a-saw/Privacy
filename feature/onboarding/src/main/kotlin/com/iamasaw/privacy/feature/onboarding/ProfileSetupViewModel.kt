@@ -88,10 +88,10 @@ class ProfileSetupViewModel
         fun onDisplayNameChanged(displayName: String) {
             if (uiState.value.isSubmitting || uiState.value.profileCreated) return
 
-            savedState["display_name"] = displayName
+            savedState["display_name"] = displayName.trim()
             mutableUiState.value =
                 uiState.value.copy(
-                    displayName = displayName,
+                    displayName = displayName.trim(),
                     submitError = null,
                 )
         }
