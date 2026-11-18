@@ -13,4 +13,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindProfileRepository(impl: DefaultProfileRepository): ProfileRepository
+
+    @Binds
+    abstract fun bindContactRepository(impl: DefaultContactRepository): ContactRepository
 }
