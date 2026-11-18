@@ -25,7 +25,9 @@ import com.iamasaw.privacy.core.model.User
 
 @Composable
 fun AddContactRoute(
-    initialUsername: String, onSaved: () -> Unit, viewModel: AddContactViewModel = hiltViewModel()
+    initialUsername: String,
+    onSaved: () -> Unit,
+    viewModel: AddContactViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,14 +57,17 @@ fun AddContactScreen(
     onSave: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            stringResource(R.string.contacts_add), style = MaterialTheme.typography.headlineMedium
+            stringResource(R.string.contacts_add),
+            style = MaterialTheme.typography.headlineMedium,
         )
 
         OutlinedTextField(
@@ -78,13 +83,14 @@ fun AddContactScreen(
         Text(stringResource(R.string.contacts_username_rules))
 
         MessengerButton(
-            text = stringResource(
-                if (state.busy && state.profile == null) {
-                    R.string.contacts_searching
-                } else {
-                    R.string.contacts_search
-                }
-            ),
+            text =
+                stringResource(
+                    if (state.busy && state.profile == null) {
+                        R.string.contacts_searching
+                    } else {
+                        R.string.contacts_search
+                    },
+                ),
             onClick = onSearch,
             enabled = !state.busy && !state.saved,
         )
@@ -100,13 +106,14 @@ fun AddContactScreen(
             ContactProfileCard(profile)
 
             MessengerButton(
-                text = stringResource(
-                    if (state.busy) {
-                        R.string.contacts_saving
-                    } else {
-                        R.string.contacts_save
-                    }
-                ),
+                text =
+                    stringResource(
+                        if (state.busy) {
+                            R.string.contacts_saving
+                        } else {
+                            R.string.contacts_save
+                        },
+                    ),
                 onClick = onSave,
                 enabled = !state.busy && !state.saved,
             )
@@ -115,15 +122,15 @@ fun AddContactScreen(
 }
 
 @Composable
-private fun ContactProfileCard(
-    profile: User
-) {
+private fun ContactProfileCard(profile: User) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = profile.displayName, style = MaterialTheme.typography.titleMedium
+                text = profile.displayName,
+                style = MaterialTheme.typography.titleMedium,
             )
             Text("@${profile.username}")
         }

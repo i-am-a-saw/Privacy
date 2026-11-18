@@ -38,7 +38,6 @@ fun ContactsListRoute(
     )
 }
 
-
 @Composable
 fun ContactsListScreen(
     state: ContactsListUiState,
@@ -48,9 +47,10 @@ fun ContactsListScreen(
     onRetry: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
@@ -75,7 +75,9 @@ fun ContactsListScreen(
         }
 
         when {
-            state.loading -> Text(stringResource(R.string.contacts_loading))
+            state.loading -> {
+                Text(stringResource(R.string.contacts_loading))
+            }
 
             state.failed -> {
                 Text(
@@ -99,9 +101,10 @@ fun ContactsListScreen(
                         key = { it.id.value },
                     ) { contact ->
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 12.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 12.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             Text(

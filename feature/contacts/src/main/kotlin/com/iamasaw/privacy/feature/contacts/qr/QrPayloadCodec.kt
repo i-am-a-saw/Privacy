@@ -3,9 +3,12 @@ package com.iamasaw.privacy.feature.contacts.qr
 import com.iamasaw.privacy.core.common.usernameRule.UsernameRule
 
 private const val MAX_PAYLOAD_LENGTH = 128
+private const val PAYLOAD_PART_COUNT = 3
 
 sealed interface QrDecodeResult {
-    data class Success(val username: String) : QrDecodeResult
+    data class Success(
+        val username: String,
+    ) : QrDecodeResult
 
     data object Invalid : QrDecodeResult
 
@@ -25,22 +28,15 @@ object QrPayloadCodec {
             return QrDecodeResult.Invalid
         }
 
-        val parts = payload.split(":")
-        if (parts.size != 3 || parts[0] != "msgr") {
-            return QrDecodeResult.Invalid
-        }
+        val parts = payload.split(':')
 
-        val version = parts[1]
-        val username = parts[2]
-
-        if (!versionPattern.matches(version) || !UsernameRule.isValid(username)) {
-            return QrDecodeResult.Invalid
-        }
-
-        return if (version == "v1") {
-            QrDecodeResult.Success(username)
-        } else {
-            QrDecodeResult.UnsupportedVersion
+        return when {
+            parts.size != PAYLOAD_PART_COUNT -> QrDecodeResult.Invalid
+            parts[0] != "msgr" -> QrDecodeResult.Invalid
+            !versionPattern.matches(parts[1]) -> QrDecodeResult.Invalid
+            !UsernameRule.isValid(parts[2]) -> QrDecodeResult.Invalid
+            parts[1] != "v1" -> QrDecodeResult.UnsupportedVersion
+            else -> QrDecodeResult.Success(parts[2])
         }
     }
 }

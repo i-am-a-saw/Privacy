@@ -99,7 +99,7 @@ class ProfileSetupViewModel
         fun onRetryAvailability() {
             val state = uiState.value
             if (state.isSubmitting || state.profileCreated) return
-            if (UsernameRule.isValid(state.username)) return
+            if (!UsernameRule.isValid(state.username)) return
 
             mutableUiState.value =
                 state.copy(

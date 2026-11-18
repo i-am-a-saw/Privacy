@@ -21,32 +21,38 @@ data class ContactsListUiState(
 
 @HiltViewModel
 class ContactsListViewModel
-@Inject constructor(
-    private val repository: ContactRepository
-) : ViewModel() {
-    private val mutableUiState = MutableStateFlow(ContactsListUiState())
-    val uiState = mutableUiState.asStateFlow()
+    @Inject
+    constructor(
+        private val repository: ContactRepository,
+    ) : ViewModel() {
+        private val mutableUiState = MutableStateFlow(ContactsListUiState())
+        val uiState = mutableUiState.asStateFlow()
 
-    private var observation: Job? = null
+        private var observation: Job? = null
 
-    init {
-        retry()
+        init {
+            retry()
+        }
+
+        fun retry() {
+            observation?.cancel()
+            mutableUiState.value = ContactsListUiState()
+
+            observation =
+                repository
+                    .observeAll()
+                    .onEach { contacts ->
+                        mutableUiState.value =
+                            ContactsListUiState(
+                                loading = false,
+                                contacts = contacts,
+                            )
+                    }.catch {
+                        mutableUiState.value =
+                            ContactsListUiState(
+                                loading = false,
+                                failed = true,
+                            )
+                    }.launchIn(viewModelScope)
+        }
     }
-
-    fun retry() {
-        observation?.cancel()
-        mutableUiState.value = ContactsListUiState()
-
-        observation = repository.observeAll().onEach { contacts ->
-            mutableUiState.value = ContactsListUiState(
-                loading = false,
-                contacts = contacts,
-            )
-        }.catch {
-            mutableUiState.value = ContactsListUiState(
-                loading = false,
-                failed = true,
-            )
-        }.launchIn(viewModelScope)
-    }
-}

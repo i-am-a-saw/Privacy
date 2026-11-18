@@ -12,17 +12,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultContactRepository @Inject constructor(
-    private val contactDao: ContactDao
-) : ContactRepository {
-    override fun observeAll(): Flow<List<User>> =
-        contactDao.observeAll().map { contacts ->
-            contacts.map { it.toUser() }
-        }
+class DefaultContactRepository
+    @Inject
+    constructor(
+        private val contactDao: ContactDao,
+    ) : ContactRepository {
+        override fun observeAll(): Flow<List<User>> =
+            contactDao.observeAll().map { contacts ->
+                contacts.map { it.toUser() }
+            }
 
-
-    override suspend fun saveContact(user: User): AppResult<Unit> =
-        runCatchingApp {
-            contactDao.upsert(user.toContactEntity())
-        }
-}
+        override suspend fun saveContact(user: User): AppResult<Unit> =
+            runCatchingApp {
+                contactDao.upsert(user.toContactEntity())
+            }
+    }
