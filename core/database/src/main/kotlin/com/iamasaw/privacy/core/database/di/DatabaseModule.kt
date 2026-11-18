@@ -12,16 +12,18 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     @Provides
+    @Singleton
     fun provideMessengerDatabase(
         @ApplicationContext context: Context,
         @Dispatcher(MessengerDispatchers.IO)
         queryDispatcher: CoroutineDispatcher,
-    ) =
+    ): MessengerDatabase =
         MessengerDatabaseFactory.create(
             context = context,
             queryDispatcher = queryDispatcher,
