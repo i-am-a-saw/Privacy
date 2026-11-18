@@ -30,6 +30,5 @@ object DatabaseModule {
         )
 
     @Provides
-    fun provideContactDao(database: MessengerDatabase): ContactDao =
-        database.contactDao()
+    fun provideContactDao(database: MessengerDatabase): ContactDao = database.contactDao()
 }

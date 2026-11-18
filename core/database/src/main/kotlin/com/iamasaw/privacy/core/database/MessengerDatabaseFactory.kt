@@ -11,13 +11,13 @@ object MessengerDatabaseFactory {
     fun create(
         context: Context,
         queryDispatcher: CoroutineDispatcher,
-        name: String = DATABASE_NAME
+        name: String = DATABASE_NAME,
     ): MessengerDatabase =
-        Room.databaseBuilder<MessengerDatabase>(
-            context = context.applicationContext,
-            name = name,
-        )
-            .setDriver(BundledSQLiteDriver())
+        Room
+            .databaseBuilder<MessengerDatabase>(
+                context = context.applicationContext,
+                name = name,
+            ).setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(queryDispatcher)
             .build()
 }
