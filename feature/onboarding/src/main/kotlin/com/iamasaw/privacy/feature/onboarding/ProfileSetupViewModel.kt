@@ -88,10 +88,10 @@ class ProfileSetupViewModel
         fun onDisplayNameChanged(displayName: String) {
             if (uiState.value.isSubmitting || uiState.value.profileCreated) return
 
-            savedState["display_name"] = displayName.trim()
+            savedState["display_name"] = displayName
             mutableUiState.value =
                 uiState.value.copy(
-                    displayName = displayName.trim(),
+                    displayName = displayName,
                     submitError = null,
                 )
         }
@@ -128,7 +128,7 @@ class ProfileSetupViewModel
                     val result =
                         repository.createProfile(
                             username = state.username,
-                            displayName = state.displayName,
+                            displayName = state.displayName.trim().ifEmpty { null },
                         )
                 ) {
                     is AppResult.Success -> {
