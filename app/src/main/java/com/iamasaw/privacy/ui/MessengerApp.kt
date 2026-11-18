@@ -1,17 +1,12 @@
 package com.iamasaw.privacy.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,6 +23,10 @@ import com.iamasaw.privacy.core.designsystem.component.LoadingIndicator
 import com.iamasaw.privacy.core.navigation.AppNavKey
 import com.iamasaw.privacy.feature.auth.CodeEntryRoute
 import com.iamasaw.privacy.feature.auth.PhoneEntryRoute
+import com.iamasaw.privacy.feature.contacts.AddContactRoute
+import com.iamasaw.privacy.feature.contacts.ContactsListRoute
+import com.iamasaw.privacy.feature.contacts.MyQrRoute
+import com.iamasaw.privacy.feature.contacts.ScanQrScreen
 import com.iamasaw.privacy.feature.onboarding.ProfileSetupRoute
 
 @Composable
@@ -39,6 +38,13 @@ fun MessengerApp(
         onCodeRequested: (String, Long) -> Unit,
     ) -> Unit = { onCodeRequested ->
         PhoneEntryRoute(onCodeRequested = onCodeRequested)
+    },
+    homeContent: @Composable (onNavigate: (AppNavKey) -> Unit) -> Unit = { navigate ->
+        ContactsListRoute(
+            onAddContact = { navigate(AppNavKey.AddContact()) },
+            onMyQr = { navigate(AppNavKey.MyQr) },
+            onScanQr = { navigate(AppNavKey.ScanQr) },
+        )
     },
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -81,6 +87,7 @@ fun MessengerApp(
                         startDestination = destination,
                         phoneEntryContent = phoneEntryContent,
                         onProfileCreated = onRetry,
+                        homeContent = homeContent,
                     )
                 }
             }
@@ -93,6 +100,7 @@ private fun GateNavHost(
     startDestination: AppNavKey,
     phoneEntryContent: @Composable ((String, Long) -> Unit) -> Unit,
     onProfileCreated: () -> Unit,
+    homeContent: @Composable (onNavigate: (AppNavKey) -> Unit) -> Unit,
 ) {
     val backStack = rememberNavBackStack(startDestination)
 
@@ -128,33 +136,37 @@ private fun GateNavHost(
                     ProfileSetupRoute(onProfileCreated = onProfileCreated)
                 }
                 entry<AppNavKey.Home> {
-                    GateDestination(
-                        title = stringResource(R.string.gate_home_title),
-                        message = stringResource(R.string.gate_home_message),
+                    homeContent { destination ->
+                        if (backStack.lastOrNull() == AppNavKey.Home) {
+                            backStack.add(destination)
+                        }
+                    }
+                }
+                entry<AppNavKey.AddContact> { destination ->
+                    AddContactRoute(
+                        initialUsername = destination.username,
+                        onSaved = {
+                            if (backStack.lastOrNull() == destination) {
+                                backStack.removeAt(backStack.lastIndex)
+                            }
+                        },
+                    )
+                }
+
+                entry<AppNavKey.MyQr> {
+                    MyQrRoute()
+                }
+
+                entry<AppNavKey.ScanQr> {
+                    ScanQrScreen(
+                        onUsername = { username ->
+                            if (backStack.lastOrNull() == AppNavKey.ScanQr) {
+                                backStack.removeAt(backStack.lastIndex)
+                                backStack.add(AppNavKey.AddContact(username))
+                            }
+                        },
                     )
                 }
             },
     )
-}
-
-@Composable
-private fun GateDestination(
-    title: String,
-    message: String,
-) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =
-            Arrangement.spacedBy(
-                16.dp,
-                Alignment.CenterVertically,
-            ),
-    ) {
-        Text(title, style = MaterialTheme.typography.headlineMedium)
-        Text(message, style = MaterialTheme.typography.bodyLarge)
-    }
 }

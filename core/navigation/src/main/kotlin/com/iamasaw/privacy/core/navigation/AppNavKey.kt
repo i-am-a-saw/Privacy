@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 
 sealed interface AppNavKey : NavKey {
     @Serializable
+    data object Home : AppNavKey
+
+    @Serializable
     data object PhoneEntry : AppNavKey
 
     @Serializable
@@ -17,5 +20,13 @@ sealed interface AppNavKey : NavKey {
     data object ProfileSetup : AppNavKey
 
     @Serializable
-    data object Home : AppNavKey
+    data class AddContact(
+        val username: String = "",
+    ) : AppNavKey
+
+    @Serializable
+    data object MyQr : AppNavKey
+
+    @Serializable
+    data object ScanQr : AppNavKey
 }

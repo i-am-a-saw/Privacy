@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contacts_title">Contacts</string>
+    <string name="contacts_empty">No saved contacts yet.</string>
+    <string name="contacts_add">Add contact</string>
+    <string name="contacts_my_qr">My QR</string>
+    <string name="contacts_scan_qr">Scan QR</string>
+    <string name="contacts_username">Username</string>
+    <string name="contacts_search">Search</string>
+    <string name="contacts_searching">Searching…</string>
+    <string name="contacts_save">Save contact</string>
+    <string name="contacts_saving">Saving…</string>
+    <string name="contacts_retry">Try again</string>
+    <string name="contacts_loading">Loading…</string>
+    <string name="contacts_username_rules">Use 3–20 lowercase letters, digits, or underscores.</string>
+    <string name="contacts_not_found">No profile has that exact username.</string>
+    <string name="contacts_no_network">Could not connect. Check your connection and try again.</string>
+    <string name="contacts_rate_limited">Too many requests. Try again later.</string>
+    <string name="contacts_unknown_error">Something went wrong. Try again.</string>
+    <string name="contacts_qr_description">QR code for username %1$s</string>
+    <string name="contacts_qr_explanation">Another Privacy user can scan this code to find your profile.</string>
+    <string name="contacts_camera_explanation">Privacy needs camera access to scan a contact QR code.</string>
+    <string name="contacts_camera_rationale">Camera access was denied. Allow it to scan a code, or add the contact by username.</string>
+    <string name="contacts_camera_settings_explanation">Allow camera access in app settings to scan a code.</string>
+    <string name="contacts_camera_allow">Allow camera</string>
+    <string name="contacts_camera_settings">Open settings</string>
+    <string name="contacts_camera_error">Could not start the camera or scan this image.</string>
+    <string name="contacts_qr_invalid">This is not a valid Privacy contact QR code.</string>
+    <string name="contacts_qr_future_version">This QR code uses a newer format. Update Privacy to read it.</string>
+    <string name="contacts_scan_explanation">Point the camera at another Privacy user’s QR code.</string>
+</resources>

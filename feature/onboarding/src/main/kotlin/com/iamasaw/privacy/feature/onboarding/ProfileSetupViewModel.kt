@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
+import com.iamasaw.privacy.core.common.usernameRule.UsernameRule
 import com.iamasaw.privacy.core.data.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -16,7 +17,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val USERNAME_DEBOUNCE_MILLIS = 400L
-private val USERNAME_PATTERN = Regex("^[a-z0-9_]{3,20}$")
 
 private data class UsernameQuery(
     val username: String,
@@ -26,7 +26,7 @@ private data class UsernameQuery(
 private fun internalAvailability(username: String): UsernameAvailability =
     when {
         username.isEmpty() -> UsernameAvailability.IDLE
-        !USERNAME_PATTERN.matches(username) -> UsernameAvailability.INVALID
+        !UsernameRule.isValid(username) -> UsernameAvailability.INVALID
         else -> UsernameAvailability.PENDING
     }
 
@@ -99,7 +99,7 @@ class ProfileSetupViewModel
         fun onRetryAvailability() {
             val state = uiState.value
             if (state.isSubmitting || state.profileCreated) return
-            if (!USERNAME_PATTERN.matches(state.username)) return
+            if (!UsernameRule.isValid(state.username)) return
 
             mutableUiState.value =
                 state.copy(
@@ -164,7 +164,7 @@ class ProfileSetupViewModel
         }
 
         private suspend fun checkAvailability(query: UsernameQuery) {
-            if (!isCurrentQuery(query) || !USERNAME_PATTERN.matches(query.username)) return
+            if (!isCurrentQuery(query) || !UsernameRule.isValid(query.username)) return
 
             mutableUiState.value =
                 uiState.value.copy(

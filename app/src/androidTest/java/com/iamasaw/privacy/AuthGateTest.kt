@@ -33,6 +33,9 @@ class AuthGateTest {
                     phoneEntryContent = { _ ->
                         Text(stringResource(R.string.gate_sign_in_title))
                     },
+                    homeContent = { _ ->
+                        Text(stringResource(R.string.gate_home_title))
+                    },
                 )
             }
         }
