@@ -146,7 +146,7 @@ class ProfileSetupViewModel
                                     state.copy(
                                         isSubmitting = false,
                                         availability = UsernameAvailability.TAKEN,
-                                        submitError = result.error,
+                                        submitError = null,
                                     )
                             }
 

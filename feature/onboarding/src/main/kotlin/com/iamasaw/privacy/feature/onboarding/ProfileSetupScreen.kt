@@ -71,7 +71,7 @@ fun ProfileSetupScreen(
                 color = MaterialTheme.colorScheme.error,
             )
             MessengerButton(
-                text = stringResource(R.string.profile_username_failed),
+                text = stringResource(R.string.profile_retry_lookup),
                 enabled = editable,
                 onClick = onRetryAvailability,
             )
