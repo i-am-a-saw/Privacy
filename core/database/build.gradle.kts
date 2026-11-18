@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.messenger.android.library)
     alias(libs.plugins.messenger.hilt)
     alias(libs.plugins.room3)
 }
