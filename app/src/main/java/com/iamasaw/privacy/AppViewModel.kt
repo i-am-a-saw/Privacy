@@ -12,6 +12,7 @@ import com.iamasaw.privacy.core.model.SessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,7 +52,7 @@ class AppViewModel @Inject constructor(
                 signOutUseCase.state,
             ) { session, _, signOut ->
                 GateInput(session, signOut)
-            }.collect { input ->
+            }.collectLatest { input ->
                 updateGate(input)
             }
         }
