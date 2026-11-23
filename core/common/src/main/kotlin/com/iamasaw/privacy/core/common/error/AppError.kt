@@ -9,6 +9,8 @@ sealed interface AppError {
 
     data object UsernameTaken : AppError
 
+    data object LocalDataCleanupFailed : AppError
+
     data class Unknown(
         val cause: Throwable? = null,
     ) : AppError
