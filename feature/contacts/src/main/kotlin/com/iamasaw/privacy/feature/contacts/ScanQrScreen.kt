@@ -45,9 +45,20 @@ fun ScanQrScreen(onUsername: (String) -> Unit) {
             Manifest.permission.CAMERA,
         ) == PackageManager.PERMISSION_GRANTED
 
+    fun cameraRationaleRequired(): Boolean =
+        activity?.let {
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                it,
+                Manifest.permission.CAMERA,
+            )
+        } == true
+
     var granted by remember { mutableStateOf(hasPermission()) }
     var requested by rememberSaveable { mutableStateOf(false) }
     var scanError by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showRationale by remember {
+        mutableStateOf(cameraRationaleRequired())
+    }
 
     val launcher =
         rememberLauncherForActivityResult(
@@ -55,19 +66,13 @@ fun ScanQrScreen(onUsername: (String) -> Unit) {
         ) { allowed ->
             requested = true
             granted = allowed
+            showRationale = cameraRationaleRequired()
         }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         granted = hasPermission()
+        showRationale = cameraRationaleRequired()
     }
-
-    val showRationale =
-        activity?.let {
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                it,
-                Manifest.permission.CAMERA,
-            )
-        } == true
 
     val openSettings = requested && !showRationale && !granted
 
