@@ -21,6 +21,7 @@ class DefaultLocalDataRepository @Inject constructor(
     }
 
     override suspend fun clearUserData(): AppResult<Unit> = runCatchingApp {
+        contacts.deleteAll()
         preferences.clearUserPreferences()
     }
 
