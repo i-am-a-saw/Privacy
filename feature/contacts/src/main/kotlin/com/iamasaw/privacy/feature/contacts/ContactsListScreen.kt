@@ -1,6 +1,7 @@
 package com.iamasaw.privacy.feature.contacts
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,13 +30,19 @@ fun ContactsListRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    ContactsListScreen(
-        state = state,
-        onAddContact = onAddContact,
-        onMyQr = onMyQr,
-        onScanQr = onScanQr,
-        onRetry = viewModel::retry,
-    )
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.weight(1f)) {
+            ContactsListScreen(
+                state = state,
+                onAddContact = onAddContact,
+                onMyQr = onMyQr,
+                onScanQr = onScanQr,
+                onRetry = viewModel::retry,
+            )
+        }
+
+        SignOutButton(onConfirm = viewModel::signOut)
+    }
 }
 
 @Composable
@@ -47,10 +54,9 @@ fun ContactsListScreen(
     onRetry: () -> Unit,
 ) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
@@ -101,10 +107,9 @@ fun ContactsListScreen(
                         key = { it.id.value },
                     ) { contact ->
                         Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             Text(

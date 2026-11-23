@@ -28,4 +28,8 @@
     <string name="contacts_qr_invalid">This is not a valid Privacy contact QR code.</string>
     <string name="contacts_qr_future_version">This QR code uses a newer format. Update Privacy to read it.</string>
     <string name="contacts_scan_explanation">Point the camera at another Privacy user’s QR code.</string>
+    <string name="contacts_sign_out">Sign out</string>
+    <string name="contacts_sign_out_title">Sign out of Privacy?</string>
+    <string name="contacts_sign_out_message">Saved contacts and local account data will be removed from this device. Your account and profile will remain.</string>
+    <string name="contacts_cancel">Cancel</string>
 </resources>
