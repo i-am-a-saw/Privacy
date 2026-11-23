@@ -6,6 +6,8 @@ import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
 import com.iamasaw.privacy.core.data.repository.AuthRepository
 import com.iamasaw.privacy.core.data.repository.ProfileRepository
+import com.iamasaw.privacy.core.data.usecase.SignOutState
+import com.iamasaw.privacy.core.data.usecase.SignOutUseCase
 import com.iamasaw.privacy.core.model.SessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,60 +18,117 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private data class GateInput(
+    val session: SessionState,
+    val signOut: SignOutState,
+)
+
 @HiltViewModel
 class AppViewModel
     @Inject
     constructor(
         authRepository: AuthRepository,
         private val profileRepository: ProfileRepository,
+        private val signOutUseCase: SignOutUseCase,
     ) : ViewModel() {
         private val mutableAppState =
             MutableStateFlow<AppState>(AppState.Loading)
-
-        val appState = mutableAppState.asStateFlow()
-
         private val mutableStartupError =
             MutableStateFlow<AppError?>(null)
 
+        val appState = mutableAppState.asStateFlow()
         val startupError = mutableStartupError.asStateFlow()
 
         private val refreshRequests = MutableStateFlow(0)
+        private var signedOutPrepared = false
 
         init {
+            viewModelScope.launch {
+                signOutUseCase.restoreIfNeeded()
+            }
+
             viewModelScope.launch {
                 combine(
                     authRepository.sessionState,
                     refreshRequests,
-                ) { session, _ ->
-                    session
-                }.collectLatest { session ->
-                    mutableStartupError.value = null
-                    mutableAppState.value = AppState.Loading
-
-                    when (session) {
-                        SessionState.Loading -> {
-                            Unit
-                        }
-
-                        is SessionState.SignedIn -> {
-                            loadProfile()
-                        }
-
-                        SessionState.SignedOut -> {
-                            mutableAppState.value = AppState.SignedOut
-                        }
-                    }
+                    signOutUseCase.state,
+                ) { session, _, signOut ->
+                    GateInput(session, signOut)
+                }.collectLatest { input ->
+                    updateGate(input)
                 }
             }
         }
 
         fun refreshProfile() {
-            refreshRequests.update { it + 1 }
+            if (signOutUseCase.state.value == SignOutState.FAILED) {
+                viewModelScope.launch {
+                    signOutUseCase()
+                }
+            } else {
+                refreshRequests.update { it + 1 }
+            }
         }
 
         fun shouldKeepSplashScreen(): Boolean =
             appState.value == AppState.Loading &&
                 startupError.value == null
+
+        private suspend fun updateGate(input: GateInput) {
+            mutableStartupError.value = null
+            mutableAppState.value = AppState.Loading
+
+            when (input.signOut) {
+                SignOutState.CHECKING,
+                SignOutState.RUNNING,
+                -> {
+                    Unit
+                }
+
+                SignOutState.IDLE -> {
+                    when (input.session) {
+                        SessionState.Loading -> {
+                            Unit
+                        }
+
+                        SessionState.SignedOut -> {
+                            prepareSignedOut()
+                        }
+
+                        is SessionState.SignedIn -> {
+                            signedOutPrepared = false
+                            loadProfile()
+                        }
+                    }
+                }
+
+                SignOutState.FAILED -> {
+                    mutableStartupError.value =
+                        AppError.LocalDataCleanupFailed
+                }
+            }
+        }
+
+        private suspend fun prepareSignedOut() {
+            val result =
+                if (signedOutPrepared) {
+                    AppResult.Success(Unit)
+                } else {
+                    signedOutPrepared = true
+                    signOutUseCase()
+                }
+
+            when (result) {
+                is AppResult.Success -> {
+                    mutableAppState.value = AppState.SignedOut
+                }
+
+                is AppResult.Failure -> {
+                    mutableStartupError.value =
+                        AppError.LocalDataCleanupFailed
+                }
+            }
+        }
 
         private suspend fun loadProfile() {
             when (val result = profileRepository.fetchOwnProfile()) {

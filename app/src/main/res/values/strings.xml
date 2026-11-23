@@ -9,4 +9,5 @@
     <string name="gate_home_message">Your account and profile are ready.</string>
     <string name="gate_network_error">Could not load your profile. Check your connection and try again.</string>
     <string name="gate_startup_error">Could not load your profile. Please try again.</string>
+    <string name="gate_cleanup_error">Could not finish signing out. Tap Retry to clear this device.</string>
 </resources>

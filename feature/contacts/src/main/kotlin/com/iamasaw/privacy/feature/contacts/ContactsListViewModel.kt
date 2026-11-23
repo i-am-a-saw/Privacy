@@ -3,6 +3,7 @@ package com.iamasaw.privacy.feature.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iamasaw.privacy.core.data.repository.ContactRepository
+import com.iamasaw.privacy.core.data.usecase.SignOutUseCase
 import com.iamasaw.privacy.core.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ContactsListUiState(
@@ -24,6 +26,7 @@ class ContactsListViewModel
     @Inject
     constructor(
         private val repository: ContactRepository,
+        private val signOutUseCase: SignOutUseCase,
     ) : ViewModel() {
         private val mutableUiState = MutableStateFlow(ContactsListUiState())
         val uiState = mutableUiState.asStateFlow()
@@ -54,5 +57,11 @@ class ContactsListViewModel
                                 failed = true,
                             )
                     }.launchIn(viewModelScope)
+        }
+
+        fun signOut() {
+            viewModelScope.launch {
+                signOutUseCase()
+            }
         }
     }

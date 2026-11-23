@@ -68,10 +68,10 @@ fun MessengerApp(
                     ErrorState(
                         message =
                             stringResource(
-                                if (startupError == AppError.NoNetwork) {
-                                    R.string.gate_network_error
-                                } else {
-                                    R.string.gate_startup_error
+                                when (startupError) {
+                                    AppError.LocalDataCleanupFailed -> R.string.gate_cleanup_error
+                                    AppError.NoNetwork -> R.string.gate_network_error
+                                    else -> R.string.gate_startup_error
                                 },
                             ),
                         modifier =

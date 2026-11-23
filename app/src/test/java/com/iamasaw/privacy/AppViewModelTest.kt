@@ -2,6 +2,7 @@ package com.iamasaw.privacy
 
 import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
+import com.iamasaw.privacy.core.data.usecase.SignOutUseCase
 import com.iamasaw.privacy.core.model.SessionState
 import com.iamasaw.privacy.core.model.User
 import com.iamasaw.privacy.core.model.UserId
@@ -25,9 +26,11 @@ class AppViewModelTest {
     private fun createViewModel(
         authRepository: FakeAuthRepository,
         profileRepository: FakeProfileRepository,
+        localData: FakeLocalDataRepository = FakeLocalDataRepository(),
     ) = AppViewModel(
         authRepository = authRepository,
         profileRepository = profileRepository,
+        signOutUseCase = SignOutUseCase(authRepository, localData),
     )
 
     @Test
@@ -221,6 +224,60 @@ class AppViewModelTest {
             assertEquals(AppState.NeedsProfile, viewModel.appState.value)
             assertNull(viewModel.startupError.value)
             assertEquals(2, profileRepository.fetchOwnProfileCalls)
+        }
+
+    @Test
+    fun `pending cleanup failure blocks account screens`() =
+        runTest {
+            val auth = FakeAuthRepository()
+            val profiles = FakeProfileRepository()
+            val local =
+                FakeLocalDataRepository().apply {
+                    pending = true
+                    clearResult = AppResult.Failure(AppError.Unknown())
+                }
+
+            auth.setSessionState(
+                SessionState.SignedIn(UserId("alice")),
+            )
+
+            val viewModel = createViewModel(auth, profiles, local)
+            advanceUntilIdle()
+
+            assertEquals(AppState.Loading, viewModel.appState.value)
+            assertEquals(
+                AppError.LocalDataCleanupFailed,
+                viewModel.startupError.value,
+            )
+            assertEquals(0, profiles.fetchOwnProfileCalls)
+        }
+
+    @Test
+    fun `retry completes pending cleanup and opens sign in`() =
+        runTest {
+            val auth = FakeAuthRepository()
+            val profiles = FakeProfileRepository()
+            val local =
+                FakeLocalDataRepository().apply {
+                    pending = true
+                    clearResult = AppResult.Failure(AppError.Unknown())
+                }
+
+            auth.setSessionState(
+                SessionState.SignedIn(UserId("alice")),
+            )
+
+            val viewModel = createViewModel(auth, profiles, local)
+            advanceUntilIdle()
+
+            local.clearResult = AppResult.Success(Unit)
+            viewModel.refreshProfile()
+            advanceUntilIdle()
+
+            assertEquals(AppState.SignedOut, viewModel.appState.value)
+            assertNull(viewModel.startupError.value)
+            assertFalse(local.pending)
+            assertEquals(0, profiles.fetchOwnProfileCalls)
         }
 
     @Test
