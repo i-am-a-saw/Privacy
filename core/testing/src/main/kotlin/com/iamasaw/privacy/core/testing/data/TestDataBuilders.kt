@@ -8,6 +8,7 @@ import com.iamasaw.privacy.core.model.MessageId
 import com.iamasaw.privacy.core.model.MessageStatus
 import com.iamasaw.privacy.core.model.User
 import com.iamasaw.privacy.core.model.UserId
+import java.time.Instant
 
 fun testUser(
     id: String = "user-alice",
@@ -23,10 +24,16 @@ fun testUser(
 
 fun testConversation(
     id: String = "conversation-1",
-    users: List<User> = listOf(testUser(), testUser(id = "user-bob", username = "bob", displayName = "Bob")),
+    peer: User = testUser(id = "user-bob", username = "bob", displayName = "Bob"),
+    lastMessagePreview: String? = null,
+    lastMessageAt: Instant? = null,
+    unreadCount: Int = 0,
 ) = Conversation(
     id = ConversationId(id),
-    users = users,
+    peer = peer,
+    lastMessagePreview = lastMessagePreview,
+    lastMessageAt = lastMessageAt,
+    unreadCount = unreadCount,
 )
 
 fun testMessage(
@@ -41,4 +48,6 @@ fun testMessage(
     content = MessageContent.Text(text),
     senderId = UserId(senderId),
     conversationId = ConversationId(conversationId),
+    localCreatedAt = Instant.parse("2026-01-01T12:00:00Z"),
+    serverCreatedAt = null,
 )
