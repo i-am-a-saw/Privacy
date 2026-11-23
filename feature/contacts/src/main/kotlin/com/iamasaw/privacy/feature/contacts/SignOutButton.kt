@@ -22,9 +22,10 @@ internal fun SignOutButton(onConfirm: () -> Unit) {
     MessengerButton(
         text = stringResource(R.string.contacts_sign_out),
         onClick = { confirming = true },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 12.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 12.dp),
     )
 
     if (confirming) {

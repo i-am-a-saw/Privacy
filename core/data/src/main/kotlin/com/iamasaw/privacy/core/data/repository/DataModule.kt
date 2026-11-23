@@ -18,5 +18,5 @@ abstract class DataModule {
     abstract fun bindContactRepository(impl: DefaultContactRepository): ContactRepository
 
     @Binds
-    abstract fun bindLocalDataRepository (impl: DefaultLocalDataRepository) : LocalDataRepository
+    abstract fun bindLocalDataRepository(impl: DefaultLocalDataRepository): LocalDataRepository
 }

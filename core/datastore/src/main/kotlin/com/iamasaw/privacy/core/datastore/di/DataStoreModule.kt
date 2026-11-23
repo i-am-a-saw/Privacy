@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 private val Context.devicePreferences by preferencesDataStore(
-    name = "device_preferences"
+    name = "device_preferences",
 )
 
 @Module

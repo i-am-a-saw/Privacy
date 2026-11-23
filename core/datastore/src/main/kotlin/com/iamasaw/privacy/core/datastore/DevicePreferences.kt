@@ -9,10 +9,9 @@ import kotlinx.coroutines.flow.first
 private val SIGN_OUT_PENDING = booleanPreferencesKey("sign_out_pending")
 
 class DevicePreferences(
-    private val store: DataStore<Preferences>
+    private val store: DataStore<Preferences>,
 ) {
-    suspend fun isSignOutPending(): Boolean =
-        store.data.first()[SIGN_OUT_PENDING] ?: false
+    suspend fun isSignOutPending(): Boolean = store.data.first()[SIGN_OUT_PENDING] ?: false
 
     suspend fun beginSignOut() {
         store.edit { preferences ->

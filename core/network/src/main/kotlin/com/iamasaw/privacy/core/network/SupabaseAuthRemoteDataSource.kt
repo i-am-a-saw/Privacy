@@ -47,7 +47,7 @@ class SupabaseAuthRemoteDataSource
             withTimeoutOrNull(SIGN_OUT_TIMEOUT_MILLIS.milliseconds) {
                 try {
                     client.auth.signOut(SignOutScope.LOCAL)
-                } catch(_: RestException) {
+                } catch (_: RestException) {
                     // Continue with local session cleanup.
                 } catch (_: IOException) {
                     // Continue with local session cleanup.

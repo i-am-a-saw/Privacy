@@ -8,25 +8,30 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultLocalDataRepository @Inject constructor(
-    private val contacts: ContactDao,
-    private val preferences: DevicePreferences,
-) : LocalDataRepository {
-    override suspend fun isSignOutPending(): AppResult<Boolean> = runCatchingApp {
-        preferences.isSignOutPending()
-    }
+class DefaultLocalDataRepository
+    @Inject
+    constructor(
+        private val contacts: ContactDao,
+        private val preferences: DevicePreferences,
+    ) : LocalDataRepository {
+        override suspend fun isSignOutPending(): AppResult<Boolean> =
+            runCatchingApp {
+                preferences.isSignOutPending()
+            }
 
-    override suspend fun beginSignOut(): AppResult<Unit> = runCatchingApp {
-        preferences.beginSignOut()
-    }
+        override suspend fun beginSignOut(): AppResult<Unit> =
+            runCatchingApp {
+                preferences.beginSignOut()
+            }
 
-    override suspend fun clearUserData(): AppResult<Unit> = runCatchingApp {
-        contacts.deleteAll()
-        preferences.clearUserPreferences()
-    }
+        override suspend fun clearUserData(): AppResult<Unit> =
+            runCatchingApp {
+                contacts.deleteAll()
+                preferences.clearUserPreferences()
+            }
 
-    override suspend fun completeSignOut(): AppResult<Unit> = runCatchingApp {
-        preferences.completeSignOut()
+        override suspend fun completeSignOut(): AppResult<Unit> =
+            runCatchingApp {
+                preferences.completeSignOut()
+            }
     }
-}
-
