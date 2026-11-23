@@ -19,6 +19,7 @@ dependencies {
     api(project(":core:common"))
     implementation(project(":core:network"))
     implementation(project(":core:database"))
+    implementation(project(":core:datastore"))
 
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.auth)
