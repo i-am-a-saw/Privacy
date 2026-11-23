@@ -34,7 +34,7 @@ class DevicePreferences(
 
     suspend fun completeSignOut() {
         store.edit { preferences ->
-            preferences[SIGN_OUT_PENDING] = false
+            preferences.remove(SIGN_OUT_PENDING)
         }
     }
 }
