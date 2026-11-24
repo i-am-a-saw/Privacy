@@ -6,6 +6,9 @@ import com.iamasaw.privacy.core.common.dispatcher.MessengerDispatchers
 import com.iamasaw.privacy.core.database.MessengerDatabase
 import com.iamasaw.privacy.core.database.MessengerDatabaseFactory
 import com.iamasaw.privacy.core.database.dao.ContactDao
+import com.iamasaw.privacy.core.database.dao.ConversationDao
+import com.iamasaw.privacy.core.database.dao.MessageDao
+import com.iamasaw.privacy.core.database.dao.SyncCursorDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,8 +24,7 @@ object DatabaseModule {
     @Singleton
     fun provideMessengerDatabase(
         @ApplicationContext context: Context,
-        @Dispatcher(MessengerDispatchers.IO)
-        queryDispatcher: CoroutineDispatcher,
+        @Dispatcher(MessengerDispatchers.IO) queryDispatcher: CoroutineDispatcher,
     ): MessengerDatabase =
         MessengerDatabaseFactory.create(
             context = context,
@@ -31,4 +33,13 @@ object DatabaseModule {
 
     @Provides
     fun provideContactDao(database: MessengerDatabase): ContactDao = database.contactDao()
+
+    @Provides
+    fun provideConversationDao(database: MessengerDatabase): ConversationDao = database.conversationDao()
+
+    @Provides
+    fun provideMessageDao(database: MessengerDatabase): MessageDao = database.messageDao()
+
+    @Provides
+    fun provideSyncCursorDao(database: MessengerDatabase): SyncCursorDao = database.syncCursorDao()
 }

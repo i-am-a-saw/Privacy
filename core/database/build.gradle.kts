@@ -20,10 +20,12 @@ dependencies {
     implementation(project(":core:common"))
 
     api(libs.room3.runtime)
+    api(libs.room3.paging)
     implementation(libs.sqlite.bundled)
     implementation(libs.kotlinx.coroutines.core)
     ksp(libs.room3.compiler)
 
+    androidTestImplementation(libs.room3.testing)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.test.runner)
