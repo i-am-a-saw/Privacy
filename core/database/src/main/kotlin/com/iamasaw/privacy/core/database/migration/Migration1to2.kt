@@ -25,7 +25,7 @@ object Migration1to2 : Migration(1, 2) {
                 sender_id TEXT NOT NULL,
                 text TEXT NOT NULL,
                 local_created_at_micros INTEGER NOT NULL,
-                server_created_at_micros INTEGER NOT NULL,
+                server_created_at_micros INTEGER,
                 status TEXT NOT NULL,
                 is_unread INTEGER NOT NULL,
                 FOREIGN KEY(conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
@@ -35,7 +35,7 @@ object Migration1to2 : Migration(1, 2) {
             CREATE INDEX IF NOT EXISTS index_messages_conversation_id ON messages (conversation_id)
         """.trimIndent())
         connection.execSQL("""
-            CREATE TABLE IF NOT EXISTS sync_cursors (
+            CREATE TABLE IF NOT EXISTS sync_cursor (
                 user_id TEXT NOT NULL PRIMARY KEY,
                 created_at_micros INTEGER NOT NULL,
                 message_id TEXT NOT NULL
