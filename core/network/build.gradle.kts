@@ -12,6 +12,9 @@ val demoKey = providers.gradleProperty("supabase.demo.key").orNull.orEmpty()
 
 android {
     namespace = "com.iamasaw.privacy.core.network"
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
     buildFeatures {
         buildConfig = true
@@ -38,6 +41,10 @@ android {
 }
 
 dependencies {
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
+
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
@@ -45,4 +52,8 @@ dependencies {
     implementation(libs.supabase.realtime)
     implementation(libs.supabase.functions)
     implementation(libs.ktor.client.okhttp)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
 }
