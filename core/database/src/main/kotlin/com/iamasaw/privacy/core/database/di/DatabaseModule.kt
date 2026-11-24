@@ -25,17 +25,17 @@ object DatabaseModule {
     fun provideMessengerDatabase(
         @ApplicationContext context: Context,
         @Dispatcher(MessengerDispatchers.IO) queryDispatcher: CoroutineDispatcher,
-    ): MessengerDatabase = MessengerDatabaseFactory.create(
-        context = context,
-        queryDispatcher = queryDispatcher,
-    )
+    ): MessengerDatabase =
+        MessengerDatabaseFactory.create(
+            context = context,
+            queryDispatcher = queryDispatcher,
+        )
 
     @Provides
     fun provideContactDao(database: MessengerDatabase): ContactDao = database.contactDao()
 
     @Provides
-    fun provideConversationDao(database: MessengerDatabase): ConversationDao =
-        database.conversationDao()
+    fun provideConversationDao(database: MessengerDatabase): ConversationDao = database.conversationDao()
 
     @Provides
     fun provideMessageDao(database: MessengerDatabase): MessageDao = database.messageDao()

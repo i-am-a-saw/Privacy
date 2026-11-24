@@ -7,12 +7,16 @@ import androidx.room3.Index
 import androidx.room3.PrimaryKey
 
 @Entity(
-    tableName = "messages", foreignKeys = [ForeignKey(
-        entity = ConversationEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["conversation_id"],
-        onDelete = ForeignKey.CASCADE,
-    )], indices = [Index(value = ["conversation_id"])]
+    tableName = "messages",
+    foreignKeys = [
+        ForeignKey(
+            entity = ConversationEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["conversation_id"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index(value = ["conversation_id"])],
 )
 data class MessageEntity(
     @PrimaryKey val id: String,

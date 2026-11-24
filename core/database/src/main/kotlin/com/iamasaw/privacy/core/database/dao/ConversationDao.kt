@@ -15,7 +15,8 @@ interface ConversationDao {
     @Query("SELECT * FROM conversations WHERE id = :id")
     suspend fun getById(id: String): ConversationEntity?
 
-    @Query("""
+    @Query(
+        """
         SELECT c.*,
             latest.text AS last_message_preview,
             COALESCE(latest.server_created_at_micros, latest.local_created_at_micros)
@@ -33,6 +34,7 @@ interface ConversationDao {
         ORDER BY COALESCE(
             latest.server_created_at_micros, latest.local_created_at_micros, c.created_at_micros
         ) DESC, c.id DESC
-    """)
+    """,
+    )
     fun observeAll(): Flow<List<ConversationSummary>>
 }

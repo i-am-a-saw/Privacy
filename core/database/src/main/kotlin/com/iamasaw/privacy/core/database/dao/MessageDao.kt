@@ -26,7 +26,7 @@ interface MessageDao {
         """
         SELECT * FROM messages WHERE conversation_id = :conversationId
         ORDER BY COALESCE(server_created_at_micros, local_created_at_micros) DESC, id DESC
-    """
+    """,
     )
     fun pagingSource(conversationId: String): PagingSource<Int, MessageEntity>
 
@@ -35,7 +35,7 @@ interface MessageDao {
         SELECT * FROM messages
         WHERE conversation_id = :conversationId AND status = 'PENDING'
         ORDER BY local_created_at_micros ASC, id ASC
-    """
+    """,
     )
     suspend fun getPending(conversationId: String): List<MessageEntity>
 
@@ -43,7 +43,7 @@ interface MessageDao {
         """
         UPDATE messages SET is_unread = 0
         WHERE conversation_id = :conversationId AND is_unread = 1
-    """
+    """,
     )
     suspend fun markConversationRead(conversationId: String): Int
 }
