@@ -13,10 +13,14 @@ object ByteaSerializer : KSerializer<ByteArray> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("PostgresBytea", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: ByteArray) {
-        val hex = value.joinToString("") { byte ->
-            (byte.toInt() and 0xff).toString(16).padStart(2, '0')
-        }
+    override fun serialize(
+        encoder: Encoder,
+        value: ByteArray,
+    ) {
+        val hex =
+            value.joinToString("") { byte ->
+                (byte.toInt() and 0xff).toString(16).padStart(2, '0')
+            }
         encoder.encodeString("\\x$hex")
     }
 

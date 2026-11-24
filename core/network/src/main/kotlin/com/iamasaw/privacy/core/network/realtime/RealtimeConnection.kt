@@ -30,96 +30,103 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RealtimeConnection @Inject constructor(
-    private val client: SupabaseClient,
-) {
-    fun events(): Flow<InboxEvent> = flow {
-        client.auth.awaitInitialization()
+class RealtimeConnection
+    @Inject
+    constructor(
+        private val client: SupabaseClient,
+    ) {
+        fun events(): Flow<InboxEvent> =
+            flow {
+                client.auth.awaitInitialization()
 
-        val userId = checkNotNull(client.auth.currentUserOrNull()?.id) {
-            "An authenticated session is required"
-        }
+                val userId =
+                    checkNotNull(client.auth.currentUserOrNull()?.id) {
+                        "An authenticated session is required"
+                    }
 
-        var failures = 0L
+                var failures = 0L
 
-        emitAll(
-            inboxSession(userId)
-                .onEach {
-                    if (it == InboxEvent.Connected) failures = 0
-                }
-                .retryWhen { cause, _ ->
-                    if (cause !is IOException) return@retryWhen false
+                emitAll(
+                    inboxSession(userId)
+                        .onEach {
+                            if (it == InboxEvent.Connected) failures = 0
+                        }.retryWhen { cause, _ ->
+                            if (cause !is IOException) return@retryWhen false
 
-                    delay(reconnectDelayMillis(failures++))
-                    true
-                },
-        )
-    }
-
-    private fun inboxSession(userId: String): Flow<InboxEvent> = channelFlow {
-        if (client.auth.currentUserOrNull()?.id != userId) {
-            throw CancellationException("The authenticated user changed")
-        }
-
-        val channel = client.channel("user:$userId") {
-            isPrivate = true
-        }
-
-        val messages = launch(start = CoroutineStart.UNDISPATCHED) {
-            channel.broadcastFlow<InboxMessageDto>("message_created").collect { event ->
-                send(
-                    InboxEvent.MessageCreated(
-                        messageId = event.id,
-                        conversationId = event.conversationId,
-                    )
+                            delay(reconnectDelayMillis(failures++))
+                            true
+                        },
                 )
             }
-        }
 
-        try {
-            val joined = withTimeoutOrNull(JOIN_TIMEOUT_MILLIS) {
-                channel.subscribe(blockUntilSubscribed = true)
-                true
-            } ?: false
+        private fun inboxSession(userId: String): Flow<InboxEvent> =
+            channelFlow {
+                if (client.auth.currentUserOrNull()?.id != userId) {
+                    throw CancellationException("The authenticated user changed")
+                }
 
-            if (!joined) {
-                throw IOException("Inbox subscription timed out")
-            }
-
-            send(InboxEvent.Connected)
-
-            coroutineScope {
-                launch {
-                    client.realtime.status.first {
-                        it != Realtime.Status.CONNECTED
+                val channel =
+                    client.channel("user:$userId") {
+                        isPrivate = true
                     }
-                    throw IOException("Realtime socket disconnected")
-                }
 
-                channel.status.first {
-                    it != RealtimeChannel.Status.SUBSCRIBED
-                }
-                throw IOException("Inbox subscription disconnected")
-            }
-        } finally {
-            messages.cancel()
+                val messages =
+                    launch(start = CoroutineStart.UNDISPATCHED) {
+                        channel.broadcastFlow<InboxMessageDto>("message_created").collect { event ->
+                            send(
+                                InboxEvent.MessageCreated(
+                                    messageId = event.id,
+                                    conversationId = event.conversationId,
+                                ),
+                            )
+                        }
+                    }
 
-            withContext(NonCancellable) {
-                withTimeoutOrNull(CLEANUP_TIMEOUT_MILLIS) {
-                    client.realtime.removeChannel(channel)
+                try {
+                    val joined =
+                        withTimeoutOrNull(JOIN_TIMEOUT_MILLIS) {
+                            channel.subscribe(blockUntilSubscribed = true)
+                            true
+                        } ?: false
+
+                    if (!joined) {
+                        throw IOException("Inbox subscription timed out")
+                    }
+
+                    send(InboxEvent.Connected)
+
+                    coroutineScope {
+                        launch {
+                            client.realtime.status.first {
+                                it != Realtime.Status.CONNECTED
+                            }
+                            throw IOException("Realtime socket disconnected")
+                        }
+
+                        channel.status.first {
+                            it != RealtimeChannel.Status.SUBSCRIBED
+                        }
+                        throw IOException("Inbox subscription disconnected")
+                    }
+                } finally {
+                    messages.cancel()
+
+                    withContext(NonCancellable) {
+                        withTimeoutOrNull(CLEANUP_TIMEOUT_MILLIS) {
+                            client.realtime.removeChannel(channel)
+                        }
+                    }
                 }
             }
+
+        private companion object {
+            const val JOIN_TIMEOUT_MILLIS = 15_000L
+            const val CLEANUP_TIMEOUT_MILLIS = 5_000L
         }
     }
-
-    private companion object {
-        const val JOIN_TIMEOUT_MILLIS = 15_000L
-        const val CLEANUP_TIMEOUT_MILLIS = 5_000L
-    }
-}
 
 @Suppress("MagicNumber")
 internal fun reconnectDelayMillis(attempt: Long): Long {
-    val exponent = attempt.coerceIn(0,5).toInt()
+    val exponent = attempt.coerceIn(0, 5).toInt()
     return (1_000L shl exponent).coerceAtMost(30_000L)
 }

@@ -19,12 +19,8 @@ abstract class NetworkModule {
     abstract fun bindProfileRemoteDataSource(impl: SupabaseProfileRemoteDataSource): ProfileRemoteDataSource
 
     @Binds
-    abstract fun bindConversations(
-        impl: SupabaseConversationRemoteDataSource
-    ): ConversationRemoteDataSource
+    abstract fun bindConversations(impl: SupabaseConversationRemoteDataSource): ConversationRemoteDataSource
 
     @Binds
-    abstract fun bindMessages(
-        impl: SupabaseMessageRemoteDataSource
-    ): MessageRemoteDataSource
+    abstract fun bindMessages(impl: SupabaseMessageRemoteDataSource): MessageRemoteDataSource
 }
