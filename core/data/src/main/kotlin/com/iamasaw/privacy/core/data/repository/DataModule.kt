@@ -1,5 +1,9 @@
 package com.iamasaw.privacy.core.data.repository
 
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultAuthRepository
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultContactRepository
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultLocalDataRepository
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultProfileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

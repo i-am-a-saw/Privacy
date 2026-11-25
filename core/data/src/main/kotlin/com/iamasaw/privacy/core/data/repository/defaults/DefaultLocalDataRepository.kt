@@ -1,9 +1,9 @@
-package com.iamasaw.privacy.core.data.repository
+package com.iamasaw.privacy.core.data.repository.defaults
 
 import com.iamasaw.privacy.core.common.result.AppResult
+import com.iamasaw.privacy.core.data.repository.LocalDataRepository
 import com.iamasaw.privacy.core.data.repository.mapper.runCatchingApp
 import com.iamasaw.privacy.core.database.MessengerDatabase
-import com.iamasaw.privacy.core.database.dao.ContactDao
 import com.iamasaw.privacy.core.datastore.DevicePreferences
 import javax.inject.Inject
 import javax.inject.Singleton
