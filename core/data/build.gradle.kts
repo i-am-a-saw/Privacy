@@ -20,13 +20,15 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:crypto"))
 
+    api(libs.androidx.paging.common)
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
 
     implementation(libs.javax.inject)
-    implementation(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.core)
 
     testImplementation(project(":core:testing"))
     testImplementation(libs.junit)
