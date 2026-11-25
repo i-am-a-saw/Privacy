@@ -15,5 +15,4 @@ sealed interface SendPendingResult {
 }
 
 @Suppress("MagicNumber")
-internal fun isPermanentSendStatus(status: Int): Boolean =
-    status in 400..499 && status !in setOf(401,408,425,429)
+internal fun isPermanentSendStatus(status: Int): Boolean = status in 400..499 && status !in setOf(401, 408, 425, 429)

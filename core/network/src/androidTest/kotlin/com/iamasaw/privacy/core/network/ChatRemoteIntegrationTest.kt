@@ -112,13 +112,14 @@ class ChatRemoteIntegrationTest {
                     id = UUID.randomUUID().toString(),
                     conversationId = conversationId,
                     senderId = aliceId,
-                    payload = MessageBodyCodec().encode(
-                        MessageBody(
-                            type = MessageBodyType.TEXT,
-                            text = "Network integration test",
-                            clientTime = Instant.now(),
+                    payload =
+                        MessageBodyCodec().encode(
+                            MessageBody(
+                                type = MessageBodyType.TEXT,
+                                text = "Network integration test",
+                                clientTime = Instant.now(),
+                            ),
                         ),
-                    ),
                     cipherSuite = "none-v0",
                 )
 

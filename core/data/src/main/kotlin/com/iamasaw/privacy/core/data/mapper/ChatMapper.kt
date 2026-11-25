@@ -11,15 +11,16 @@ import com.iamasaw.privacy.core.model.UserId
 import com.iamasaw.privacy.core.network.dto.ConversationDto
 import java.time.Instant
 
-internal fun MessageEntity.toMessage(): Message = Message(
-    id = MessageId(id),
-    status = MessageStatus.valueOf(status),
-    content = MessageContent.Text(text),
-    senderId = UserId(senderId),
-    conversationId = ConversationId(conversationId),
-    localCreatedAt = localCreatedAtMicros.toInstantFromMicros(),
-    serverCreatedAt = serverCreatedAtMicros?.toInstantFromMicros(),
-)
+internal fun MessageEntity.toMessage(): Message =
+    Message(
+        id = MessageId(id),
+        status = MessageStatus.valueOf(status),
+        content = MessageContent.Text(text),
+        senderId = UserId(senderId),
+        conversationId = ConversationId(conversationId),
+        localCreatedAt = localCreatedAtMicros.toInstantFromMicros(),
+        serverCreatedAt = serverCreatedAtMicros?.toInstantFromMicros(),
+    )
 
 internal fun ConversationDto.toEntity(owner: UserId): ConversationEntity {
     require(type == "direct") {
@@ -27,9 +28,10 @@ internal fun ConversationDto.toEntity(owner: UserId): ConversationEntity {
     }
 
     val peer = members.single { it.userId != owner.value }
-    val profile = checkNotNull(peer.profile) {
-        "Peer profile is missing"
-    }
+    val profile =
+        checkNotNull(peer.profile) {
+            "Peer profile is missing"
+        }
 
     return ConversationEntity(
         id = id,
@@ -37,25 +39,24 @@ internal fun ConversationDto.toEntity(owner: UserId): ConversationEntity {
         peerUsername = profile.username,
         peerDisplayName = profile.displayName ?: profile.username,
         createdAtMicros = Instant.parse(createdAt).toEpochMicros(),
-        peerAvatarPath = profile.avatarPath
+        peerAvatarPath = profile.avatarPath,
     )
 }
 
-internal fun MessageEntity.mergeExisting(
-    existing: MessageEntity?
-): MessageEntity =
+internal fun MessageEntity.mergeExisting(existing: MessageEntity?): MessageEntity =
     if (existing == null) {
         this
     } else {
         copy(
             localCreatedAtMicros = existing.localCreatedAtMicros,
             isUnread = existing.isUnread,
-            status = when(existing.status) {
-                MessageStatus.READ.name,
-                MessageStatus.DELIVERED.name,
-                -> existing.status
+            status =
+                when (existing.status) {
+                    MessageStatus.READ.name,
+                    MessageStatus.DELIVERED.name,
+                    -> existing.status
 
-                else -> status
-            }
+                    else -> status
+                },
         )
     }

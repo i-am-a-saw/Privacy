@@ -14,5 +14,5 @@ internal fun Instant.toEpochMicros(): Long =
 internal fun Long.toInstantFromMicros(): Instant =
     Instant.ofEpochSecond(
         Math.floorDiv(this, MICROS_PER_SECOND),
-        Math.floorMod(this, MICROS_PER_SECOND) * NANOS_PER_MICRO
+        Math.floorMod(this, MICROS_PER_SECOND) * NANOS_PER_MICRO,
     )

@@ -1,6 +1,9 @@
 package com.iamasaw.privacy.core.data.repository.mapper
 
 import com.iamasaw.privacy.core.common.error.AppError
+import com.iamasaw.privacy.core.data.mapper.mapAuthError
+import com.iamasaw.privacy.core.data.mapper.mapPostgrestError
+import com.iamasaw.privacy.core.data.mapper.toAppError
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import org.junit.Assert.assertEquals
 import org.junit.Test

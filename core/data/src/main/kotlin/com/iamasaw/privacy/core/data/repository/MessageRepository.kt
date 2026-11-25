@@ -8,18 +8,14 @@ import com.iamasaw.privacy.core.model.MessageId
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
-    fun observeMessages(
-        conversationId: ConversationId,
-    ): Flow<PagingData<Message>>
+    fun observeMessages(conversationId: ConversationId): Flow<PagingData<Message>>
 
     suspend fun enqueueOutgoing(
         conversationId: ConversationId,
-        text: String
+        text: String,
     ): AppResult<MessageId>
 
-    suspend fun sendPending(
-        messageId: MessageId,
-    ): SendPendingResult
+    suspend fun sendPending(messageId: MessageId): SendPendingResult
 
     suspend fun syncInbox(): AppResult<Unit>
 }

@@ -1,4 +1,4 @@
-package com.iamasaw.privacy.core.data.repository.mapper
+package com.iamasaw.privacy.core.data.mapper
 
 import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
