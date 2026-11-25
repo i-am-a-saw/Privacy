@@ -1,6 +1,9 @@
 package com.iamasaw.privacy.core.network
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.iamasaw.privacy.core.crypto.MessageBody
+import com.iamasaw.privacy.core.crypto.MessageBodyCodec
+import com.iamasaw.privacy.core.crypto.MessageBodyType
 import com.iamasaw.privacy.core.network.conversation.SupabaseConversationRemoteDataSource
 import com.iamasaw.privacy.core.network.dto.MessageCursorDto
 import com.iamasaw.privacy.core.network.dto.MessageInsertDto
@@ -31,6 +34,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Instant
 import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
@@ -108,7 +112,14 @@ class ChatRemoteIntegrationTest {
                     id = UUID.randomUUID().toString(),
                     conversationId = conversationId,
                     senderId = aliceId,
-                    payload = byteArrayOf(0, 15, -128, -1),
+                    payload =
+                        MessageBodyCodec().encode(
+                            MessageBody(
+                                type = MessageBodyType.TEXT,
+                                text = "Network integration test",
+                                clientTime = Instant.now(),
+                            ),
+                        ),
                     cipherSuite = "none-v0",
                 )
 

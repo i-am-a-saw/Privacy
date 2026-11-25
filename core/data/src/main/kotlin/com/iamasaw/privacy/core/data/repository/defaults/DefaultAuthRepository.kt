@@ -1,8 +1,9 @@
-package com.iamasaw.privacy.core.data.repository
+package com.iamasaw.privacy.core.data.repository.defaults
 
 import com.iamasaw.privacy.core.common.result.AppResult
-import com.iamasaw.privacy.core.data.repository.mapper.runCatchingApp
-import com.iamasaw.privacy.core.data.repository.mapper.toSessionState
+import com.iamasaw.privacy.core.data.mapper.runCatchingApp
+import com.iamasaw.privacy.core.data.mapper.toSessionState
+import com.iamasaw.privacy.core.data.repository.AuthRepository
 import com.iamasaw.privacy.core.model.SessionState
 import com.iamasaw.privacy.core.network.AuthRemoteDataSource
 import kotlinx.coroutines.flow.Flow

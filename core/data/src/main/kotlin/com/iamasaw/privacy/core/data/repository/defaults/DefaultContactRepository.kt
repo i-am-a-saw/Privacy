@@ -1,9 +1,10 @@
-package com.iamasaw.privacy.core.data.repository
+package com.iamasaw.privacy.core.data.repository.defaults
 
 import com.iamasaw.privacy.core.common.result.AppResult
-import com.iamasaw.privacy.core.data.repository.mapper.runCatchingApp
-import com.iamasaw.privacy.core.data.repository.mapper.toContactEntity
-import com.iamasaw.privacy.core.data.repository.mapper.toUser
+import com.iamasaw.privacy.core.data.mapper.runCatchingApp
+import com.iamasaw.privacy.core.data.mapper.toContactEntity
+import com.iamasaw.privacy.core.data.mapper.toUser
+import com.iamasaw.privacy.core.data.repository.ContactRepository
 import com.iamasaw.privacy.core.database.dao.ContactDao
 import com.iamasaw.privacy.core.model.User
 import kotlinx.coroutines.flow.Flow

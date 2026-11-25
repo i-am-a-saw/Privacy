@@ -1,5 +1,6 @@
 package com.iamasaw.privacy.core.data.repository.mapper
 
+import com.iamasaw.privacy.core.data.mapper.toSessionState
 import com.iamasaw.privacy.core.model.SessionState
 import com.iamasaw.privacy.core.model.UserId
 import io.github.jan.supabase.auth.status.RefreshFailureCause

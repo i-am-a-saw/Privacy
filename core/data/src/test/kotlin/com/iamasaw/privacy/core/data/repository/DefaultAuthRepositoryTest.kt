@@ -2,6 +2,7 @@ package com.iamasaw.privacy.core.data.repository
 
 import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultAuthRepository
 import com.iamasaw.privacy.core.model.SessionState
 import com.iamasaw.privacy.core.model.UserId
 import io.github.jan.supabase.auth.status.SessionStatus

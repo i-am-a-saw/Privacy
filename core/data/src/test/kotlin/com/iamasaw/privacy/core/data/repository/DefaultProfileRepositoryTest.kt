@@ -2,6 +2,7 @@ package com.iamasaw.privacy.core.data.repository
 
 import com.iamasaw.privacy.core.common.error.AppError
 import com.iamasaw.privacy.core.common.result.AppResult
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultProfileRepository
 import com.iamasaw.privacy.core.model.User
 import com.iamasaw.privacy.core.model.UserId
 import com.iamasaw.privacy.core.network.dto.ProfileDto
