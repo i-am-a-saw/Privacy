@@ -2,6 +2,7 @@ package com.iamasaw.privacy.core.data.repository
 
 import com.iamasaw.privacy.core.data.repository.defaults.DefaultAuthRepository
 import com.iamasaw.privacy.core.data.repository.defaults.DefaultContactRepository
+import com.iamasaw.privacy.core.data.repository.defaults.DefaultConversationRepository
 import com.iamasaw.privacy.core.data.repository.defaults.DefaultLocalDataRepository
 import com.iamasaw.privacy.core.data.repository.defaults.DefaultMessageRepository
 import com.iamasaw.privacy.core.data.repository.defaults.DefaultProfileRepository
@@ -31,4 +32,7 @@ abstract class DataModule {
 
     @BindsOptionalOf
     abstract fun optionalOutboxScheduler(): OutboxScheduler
+
+    @Binds
+    abstract fun bindConversationRepository(impl: DefaultConversationRepository): ConversationRepository
 }
