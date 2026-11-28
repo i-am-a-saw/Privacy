@@ -19,47 +19,48 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultConversationRepository @Inject internal constructor(
-    private val database: MessengerDatabase,
-    private val remote: ConversationRemoteDataSource,
-    private val currentUser: CurrentChatUser,
-) : ConversationRepository {
-    private val conversations = database.conversationDao()
+class DefaultConversationRepository
+    @Inject
+    internal constructor(
+        private val database: MessengerDatabase,
+        private val remote: ConversationRemoteDataSource,
+        private val currentUser: CurrentChatUser,
+    ) : ConversationRepository {
+        private val conversations = database.conversationDao()
 
-    override fun observeAll(): Flow<List<Conversation>> =
-        conversations.observeAll().map { rows ->
-            rows.map { it.toConversation() }
-        }
-
-    override suspend fun startDirectChat(
-        otherUserId: UserId
-    ): AppResult<ConversationId> =
-        runCatchingApp {
-            val owner = currentUser.requireId()
-
-            require(otherUserId != owner) {
-                "Cannot start a direct chat with yourself"
+        override fun observeAll(): Flow<List<Conversation>> =
+            conversations.observeAll().map { rows ->
+                rows.map { it.toConversation() }
             }
 
-            val id = remote.startDirectChat(otherUserId.value)
+        override suspend fun startDirectChat(otherUserId: UserId): AppResult<ConversationId> =
+            runCatchingApp {
+                val owner = currentUser.requireId()
 
-            currentUser.check(owner)
+                require(otherUserId != owner) {
+                    "Cannot start a direct chat with yourself"
+                }
 
-            val dto = remote.fetchMyConversations().single {
-                it.id == id
-            }
+                val id = remote.startDirectChat(otherUserId.value)
 
-            val row = dto.toEntity(owner)
-
-            check(row.peerUserId == otherUserId.value) {
-                "Unexpected conversation peer"
-            }
-
-            database.chatTransaction {
                 currentUser.check(owner)
-                conversations.upsert(row)
-            }
 
-            ConversationId(id)
-        }
-}
+                val dto =
+                    remote.fetchMyConversations().single {
+                        it.id == id
+                    }
+
+                val row = dto.toEntity(owner)
+
+                check(row.peerUserId == otherUserId.value) {
+                    "Unexpected conversation peer"
+                }
+
+                database.chatTransaction {
+                    currentUser.check(owner)
+                    conversations.upsert(row)
+                }
+
+                ConversationId(id)
+            }
+    }

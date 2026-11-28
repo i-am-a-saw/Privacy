@@ -5,9 +5,10 @@ import com.iamasaw.privacy.core.model.Conversation
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveConversationsUseCase @Inject constructor (
-    private val conversations: ConversationRepository,
-) {
-    operator fun invoke(): Flow<List<Conversation>> =
-        conversations.observeAll()
-}
+class ObserveConversationsUseCase
+    @Inject
+    constructor(
+        private val conversations: ConversationRepository,
+    ) {
+        operator fun invoke(): Flow<List<Conversation>> = conversations.observeAll()
+    }

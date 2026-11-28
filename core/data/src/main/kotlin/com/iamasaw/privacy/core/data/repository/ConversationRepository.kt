@@ -9,7 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface ConversationRepository {
     fun observeAll(): Flow<List<Conversation>>
 
-    suspend fun startDirectChat(
-        otherUserId: UserId,
-    ): AppResult<ConversationId>
+    suspend fun startDirectChat(otherUserId: UserId): AppResult<ConversationId>
 }
